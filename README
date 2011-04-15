@@ -1,5 +1,6 @@
+# -*- org -*-
 
-* Ferk's collection of scripts
+* Collection of scripts
 
 ** Disclaimer
 
@@ -19,7 +20,10 @@ with them.  If not, see <http://www.gnu.org/licenses/>.
 ** Description of the scripts
 
 *** alarm
-A simple alarm script to wake you up
+A simple alarm script to wake you up, playing a designated xmms2 playlist.
+
+It forces you to enter a command in the terminal for setting the alarm off..
+it usually helps me waking up.
 
 *** autoscroll.sh 
 Slowly scrolls down with the mouse automatically, so you can read a webpage,
@@ -42,7 +46,10 @@ You can activate/deactivate it by binding a key shortcut to..
 You need xmacro installed.
 
 *** browser
-I just use this for executing my browser... I just wanted to keep it synced
+This script is set as my default handler for opening webpages.
+It's just a wrapper around my browser... I just wanted to keep it synced,
+and it allows me to check for multiple browsers, so I can keep the same 
+configuration in different systems with different browsers.
 
 *** camrecord
 A simple script for recording videos with the webcam
@@ -74,14 +81,22 @@ Activates some options for reducing the power consumption.
 Sets a random wallpaper from my collection of wallpapers
 
 *** statck
-This script is executed
+This script checks for temperature and battery and displays a notification
+(using notify-send) if the limits are too high.
+
+It can either execute a single time, or be run as a daemon (statck -d) that
+will re-run the check each minute.
+
+It has also an option to show the status as a single line (statck -1) which
+I use it for displaying it at dwm status line.
 
 *** thumb-extract
 Extracts the image thumbnails stored in the "thumb.db" files left out by windows
 installations.
 
 *** tree.sh
-Should a tree view of the directory
+Shows a list of files/directories and their size (du -akx) and processes it
+to a human readable tree shape.
 
 *** vol.sh
 Increases/decreases the volume (uses pulseaudio)

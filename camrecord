@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# A simple script for recording videos with the webcam
 
 OFILE="test$(date +%s).avi"
 

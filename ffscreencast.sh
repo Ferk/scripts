@@ -1,5 +1,7 @@
 #!/bin/sh
 
+## Script to record a screencast
+
 START="-ss 00:05:00"
 END="-t  00:10:00"
 

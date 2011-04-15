@@ -1,10 +1,15 @@
 #!/bin/sh
 
-#powersave -l
+##
+# Activates some options for reducing the power consumption.
+#
 
 
-sudo cpufreq-selector -g powersave -c 0
-sudo cpufreq-selector -g powersave -c 1
+
+#sudo cpufreq-selector -g powersave -c 0
+#sudo cpufreq-selector -g powersave -c 1
+sudo cpufreq-set  -g powersave -c 0
+sudo cpufreq-set  -g powersave -c 1
 
 
 # increase the VM dirty writeback time from 0.29 to 15 seconds

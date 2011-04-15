@@ -1,5 +1,18 @@
 #!/bin/sh
 
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+# Time-stamp: <2011-04-15 13:19:13 ferk>
+
+# This script checks for temperature and battery and displays a notification
+# (using notify-send) if the limits are too high.
+#
+# It can either execute a single time, or be run as a daemon (statck -d) that
+# will re-run the check each minute.
+#
+# It has also an option to show the status as a single line (statck -1) which
+# can be used for displaying it at applications status line.
+
+
 ####
 # tempck: Temperature Checking
 ####

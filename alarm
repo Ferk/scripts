@@ -1,5 +1,27 @@
 #!/bin/bash
 
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+# Time-stamp: <2011-04-15 13:19:13 ferk>
+
+# © 2008 Fernando Carmona Varo - Licensed under the GPLv3
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+
+####
+# Simple Alarm
+####
+
+# It starts xmms2 playing the playlist "wakeup" at a given time
+
+# I use cron to set up the time(s) when the script will be triggered.
+# you can also use the "at" command to set temporal alarms.
+
+# To set off the alarm you will have to type "alarm off" in your terminal
+# the typing should make your brain react and wake you up... in theory :P
+
+
 export DISPLAY=:0
 
 if [ "$1" == "off" ]
@@ -18,7 +40,7 @@ else
     amixer sset Front playback 100%
     # echo "" | pacmd
 
-    for (( i=5; i <= 100; i=i+5 ))
+    for (( i=0; i <= 100; i=i+2 ))
     do
         amixer sset Master playback $i%
         sleep 5s

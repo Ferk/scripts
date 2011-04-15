@@ -13,30 +13,38 @@
 # Wallpapers Directory
 walldir=~/Pictures/wallpapers
 
-tmpLog=/tmp/wallpapers.log
+# tmpLog=/tmp/wallpapers.log
 
 
+# # Create a temporary logfile of all matches
+# find $walldir -iregex ".*\.png\|.*\.jpg\|.*\.gif" > $tmpLog
 
-# Create a temporary logfile of all matches
-find $walldir -iregex ".*\.png\|.*\.jpg\|.*\.gif" > $tmpLog
 
+# # Choose a random line number (any number from 1 to the length of the file)
+# LowerBound=1
+# RandomMax=32767
+# UpperBound=$(cat $tmpLog | wc -l ) # wc counts the number of lines
+# RandomLine=$( echo $LowerBound+"("$UpperBound*$RANDOM")"/$RandomMax | bc )
 
-# Choose a random line number (any number from 1 to the length of the file)
-LowerBound=1
-RandomMax=32767
-UpperBound=$(cat $tmpLog | wc -l ) # wc counts the number of lines
-RandomLine=$( echo $LowerBound+"("$UpperBound*$RANDOM")"/$RandomMax | bc )
+# # Use sed to grab the random line
+# wallp=$( sed -n "$RandomLine{p;q;}" "$tmpLog" ) 
 
-# Use sed to grab the random line
-wallp=$( sed -n "$RandomLine{p;q;}" "$tmpLog" ) 
+# # set the random wallpaper
+# echo "("file $RandomLine/$UpperBound")" Setting $wallp... 
 
-# set the random wallpaper
-echo "("file $RandomLine/$UpperBound")" Setting $wallp... 
+wallp=$(find "$walldir" -iregex ".*\(jpg\|png\)" | shuf -n 1)
+
+#convert "$wallp" -gamma 0.4 "$HOME/Pictures/wallpapers/.wallpaper"
+convert "$wallp" -brightness-contrast -50x-50 "$HOME/Pictures/wallpapers/.wallpaper"
+wallp="$HOME/Pictures/wallpapers/.wallpaper"
+
 #hsetroot -full "$wallp" -gamma 0.5 -brightness 50 $@
-hsetroot -full "$wallp" -gamma 0.5 $@
+#hsetroot -full "$wallp" -gamma 0.5 $@
+
+feh --bg-max "$wallp"
 
 # For GNOME wallpaper
 gconftool-2 -t string -s /desktop/gnome/background/picture_filename "$wallp"
 
-ln -fs "$wallp" "$HOME/Pictures/wallpapers/.wallpaper"
+#ln -fs "$wallp" "$HOME/Pictures/wallpapers/.wallpaper"
 

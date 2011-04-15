@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Fernando Carmona Varo
+
+##
+# Extracts the image thumbnails stored in the "thumb.db" files left out by
+# windows installations.
+##
 
 function th-extract()
 {

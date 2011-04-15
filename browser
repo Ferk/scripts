@@ -1,9 +1,8 @@
 #!/bin/bash
 
-
 export LD_PRELOAD=/usr/lib/libv4l/v4l1compat.so
 
-CHARGS=" --start-maximized --enable-click-to-play --enable-apps --enable-accelerated-compositing --password-store=gnome --enable-sync-extensions --enable-sync-passwords"
+CHARGS=" --start-maximized --enable-apps --password-store=gnome --enable-sync-passwords"
 #CHARGS=" --start-maximized --enable-click-to-play --enable-apps --enable-accelerated-compositing --enable-accelerated-2d-canvas --password-store=gnome"
 
 if [ "$(which chromium-browser)" ]

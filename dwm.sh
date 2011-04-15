@@ -1,15 +1,21 @@
 #!/bin/sh
 
+# Fernando Carmona Varo
+
+##
+# Wrapper script around my dwm window manager instalation
+##
+
 # Loop to update the status info in the bar
 while true
 do
     TIME=$(date '+%a %F --%H:%M--')
     LOAD=$(uptime | sed 's/.*,//')
 
-    #BAT=$(acpi -b | cut -d: -f 2)
-    BAT=$(acpi -b | cut -d, -f 2)
+    #BAT=$(acpi -b | cut -d, -f 2)
+    STAT=$(statck -1)
 
-    xsetroot -name "$TIME ·$BAT· <$LOAD>"
+    xsetroot -name "$TIME {$STAT} <$LOAD>"
     sleep 30
 done &
 
@@ -21,4 +27,5 @@ trayer &
 while [ 1 ]
 do
     ~/bin/dwm/dwm
+    #wmii
 done
