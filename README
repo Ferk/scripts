@@ -1,0 +1,91 @@
+
+* Ferk's collection of scripts
+
+** Disclaimer
+
+All these scripts are free for anyone to use, redistribute and/or modify
+under the terms of the GNU General Public License as published by the FSF,
+either version 3 of the License, or (at your option) any later version.
+
+These scripts are distributed in the hope dass it will be useful, but 
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+more details.
+
+You should have received a copy of the GNU General Public License along
+with them.  If not, see <http://www.gnu.org/licenses/>.
+
+
+** Description of the scripts
+
+*** alarm
+A simple alarm script to wake you up
+
+*** autoscroll.sh 
+Slowly scrolls down with the mouse automatically, so you can read a webpage,
+a book, or whatever you want to read on your PC.
+Useful when you have your hands busy when eating or doing something.
+
+You can activate/deactivate it by binding a key shortcut to..
+:    pkill autoscroll.sh || autoscroll.sh
+
+You need xmacro installed.
+
+*** turboclick.sh
+Performs a lot of clicks pretty fast in an endless loop. It can drive you crazy
+if you execute it unprepared. I just made it for fun, and beating those silly flash
+games about "how fast can you click?"
+
+You can activate/deactivate it by binding a key shortcut to..
+:    pkill turboclick.sh || turboclick.sh
+
+You need xmacro installed.
+
+*** browser
+I just use this for executing my browser... I just wanted to keep it synced
+
+*** camrecord
+A simple script for recording videos with the webcam
+
+*** dwm.sh
+Wrapper script around my dwm window manager instalation
+
+*** e
+Not really very useful anymore, since emacs already improved emacsclient invocation,
+but this is my wrapper around emacs.
+
+*** ffscreencast.sh
+Uses ffmpeg to record a screencast
+
+*** imgupload.py
+Uploads a image to imgurl
+
+*** makegrubusb.sh
+Script for making bootable usb sticks
+
+*** mount.iso
+I don't want to remember what are the arguments for mounting an iso image, so I
+made this script to use it instead.
+
+*** powersave.sh
+Activates some options for reducing the power consumption.
+
+*** setwallpaper
+Sets a random wallpaper from my collection of wallpapers
+
+*** statck
+This script is executed
+
+*** thumb-extract
+Extracts the image thumbnails stored in the "thumb.db" files left out by windows
+installations.
+
+*** tree.sh
+Should a tree view of the directory
+
+*** vol.sh
+Increases/decreases the volume (uses pulseaudio)
+
+*** xinit.sh
+This is the script I'm running for my X.org session
+
