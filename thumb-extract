@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+function th-extract()
+{
+    ThumbFile="$1"
+    TMPDIR="${ThumbFile/.db/.d}"
+    
+    echo "Extrayendo $ThumbFile en $TMPDIR..."
+    mkdir $TMPDIR 
+    vinetto "$ThumbFile"  -o "$TMPDIR" > /dev/null 
+}
+
+
+find ./ -iname Thumbs.db -exec vinetto {} -o {}.d \;
+
+
+

@@ -1,0 +1,50 @@
+#!/bin/bash
+
+
+OFILE="test$(date +%s).avi"
+
+
+case "$1" in
+
+    snd)
+    IN="tv:// -tv driver=v4l2:device=/dev/video0"
+    OVCODEC="-ovc lavc"
+    OACODEC="-oac mp3lame -lameopts cbr:br=64:mode=3"
+    ;;
+
+    *)
+    IN="tv:// -tv driver=v4l2:device=/dev/video0"
+    OVCODEC="-ovc lavc"
+    OACODEC="-nosound"
+    ;;
+
+esac;
+
+
+
+mencoder $IN -o $OFILE $OVCODEC $OAVCODEC
+
+
+# ffmpeg -y -an -f video4linux2 -s 320x240 -r 15 -qscale 5 -i /dev/video0  -f avi teste.avi
+
+
+#mencoder tv:// -tv driver=v4l2:device=/dev/video0 -ovc $OVCODEC -nosound -o $OFILE 
+
+# mencoder tv:// -tv driver=v4l2:device=/dev/video0:adevice=/dev/dsp:forceaudio -ovc lavc -oac mp3lame -o test.avi 
+
+
+# mencoder tv:// -tv driver=v4l2:device=/dev/video0 -ovc lavc -oac mp3lame -lameopts cbr:br=64:mode=3 -o webcam.avi
+
+#mencoder tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0:alsa:forceaudio:amode=0:adevice=hw.1 -fps 15 -ovc $OVCODECC lavc -oac $OACODEC -lameopts cbr:br=64:mode=3 -o $OFILE
+
+#mencoder tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0:alsa:forceaudio:amode=0:adevice=hw.1,0 -fps 15 -ovc lavc -oac mp3lame -lameopts cbr:br=64:mode=3 -o testsnd.avi
+
+#mencoder tv:// -tv driver=v4l2:width=640:height=480:device=/dev/video0:amode=0:adevice=/dev/dsp1:forceaudio -fps 15 -ovc lavc -oac mp3lame -lameopts cbr:br=64:mode=3 -o testsnd.avi
+
+
+
+# mencoder rms.ogv -fps 14 -ovc lavc -oac mp3lame -lameopts cbr:br=64:mode=3 -o rms.avi
+
+
+# gst-launch v4l2src queue-size=16  stamp sync-margin=1 sync-interval=1   video/x-raw-yuv,width=800,height=600,framerate=15/1   queue2 max-size-buffers=1000 max-size-bytes=0 max-size-time=0    ffmpegcolorspace   theoraenc quality=60 name=venc  alsasrc device="hw:1,0"    audio/x-raw-int,rate=16000,channels=1,depth=16    audioconvert   queue2 max-size-buffers=1000 max-size-bytes=0 max-size-time=0     vorbisenc quality=0.9 name=aenc oggmux name=mux   filesink location=test.ogg aenc.   mux. venc.   mux
+

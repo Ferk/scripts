@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "$#" -eq "2" ]
+then
+        sudo mount $1 $2  -t iso9660 -o ro,loop
+else
+        echo "Usage: mount.iso <file.iso> <mountpoint>"
+fi

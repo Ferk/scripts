@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+export LD_PRELOAD=/usr/lib/libv4l/v4l1compat.so
+
+CHARGS=" --start-maximized --enable-click-to-play --enable-apps --enable-accelerated-compositing --password-store=gnome --enable-sync-extensions --enable-sync-passwords"
+#CHARGS=" --start-maximized --enable-click-to-play --enable-apps --enable-accelerated-compositing --enable-accelerated-2d-canvas --password-store=gnome"
+
+if [ "$(which chromium-browser)" ]
+then
+    export BROWSER="chromium-browser $CHARGS"
+else 
+    if [ "$(which chromium)" ]
+    then
+        export BROWSER="chromium $CHARGS"
+    else 
+        if [ "$(which firefox)" ]
+        then
+            export BROWSER="firefox"
+        fi
+    fi
+fi
+#export BROWSER="firefox"
+eval "$BROWSER $@" &

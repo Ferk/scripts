@@ -1,0 +1,42 @@
+#!/bin/bash
+##
+## setwallpaper
+## 
+## Made by Fernando Carmona
+## Login   <ferk@Mabby>
+## 
+## Started on  Mon Jul 13 20:37:57 2008 Fernando Carmona
+## Last update Mon Jul 14 20:37:57 2008 Fernando Carmona
+##
+
+
+# Wallpapers Directory
+walldir=~/Pictures/wallpapers
+
+tmpLog=/tmp/wallpapers.log
+
+
+
+# Create a temporary logfile of all matches
+find $walldir -iregex ".*\.png\|.*\.jpg\|.*\.gif" > $tmpLog
+
+
+# Choose a random line number (any number from 1 to the length of the file)
+LowerBound=1
+RandomMax=32767
+UpperBound=$(cat $tmpLog | wc -l ) # wc counts the number of lines
+RandomLine=$( echo $LowerBound+"("$UpperBound*$RANDOM")"/$RandomMax | bc )
+
+# Use sed to grab the random line
+wallp=$( sed -n "$RandomLine{p;q;}" "$tmpLog" ) 
+
+# set the random wallpaper
+echo "("file $RandomLine/$UpperBound")" Setting $wallp... 
+#hsetroot -full "$wallp" -gamma 0.5 -brightness 50 $@
+hsetroot -full "$wallp" -gamma 0.5 $@
+
+# For GNOME wallpaper
+gconftool-2 -t string -s /desktop/gnome/background/picture_filename "$wallp"
+
+ln -fs "$wallp" "$HOME/Pictures/wallpapers/.wallpaper"
+
