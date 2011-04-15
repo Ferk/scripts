@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Fernando Carmona Varo
+
+# Launches an X.org server in another display with the given program
+#
+# If no program is given as argument, choose on dmenu (if available)
+
+
+APP="$@"
+
+# Ask for an application until it's valid
+while true
+do
+	which $APP 2> /dev/null && break
+	APP=$(dmenu_path | dmenu)
+
+	if [[ ! $? -eq 0 ]]
+	then
+		echo "usage: Xlaunch <program>"
+		exit
+	fi
+done
+
+DISPLAY=":9"
+
+X $DISPLAY -ac &
+
+# If you have nvidia, load it
+# if you don't, you don't need this
+nvidia-settings --load-config-only
+
+sleep 1
+exec $APP
+
+exit
+
+

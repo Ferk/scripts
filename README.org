@@ -8,7 +8,7 @@ All these scripts are free for anyone to use, redistribute and/or modify
 under the terms of the GNU General Public License as published by the FSF,
 either version 3 of the License, or (at your option) any later version.
 
-These scripts are distributed in the hope dass it will be useful, but 
+These scripts are distributed in the hope that they will be useful, but 
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
 or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 more details.
@@ -104,3 +104,6 @@ Increases/decreases the volume (uses pulseaudio)
 *** xinit.sh
 This is the script I'm running for my X.org session
 
+*** Xlaunch
+Launches an X.org server in another display with the given program.
+If no program is given as argument, choose on dmenu (if available).
