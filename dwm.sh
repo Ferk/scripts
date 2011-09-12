@@ -19,9 +19,11 @@ do
     sleep 30
 done &
 
-# systray
 #trayer --expand true --widthtype request --transparent true --alpha 255 --edge top --align right --height 15 &
 trayer &
+
+# Set a known name to the WM so that some programs don't complain
+wmname LG3D
 
 # Run dwm in loop so it can restart (to close session pkill dwm.sh)
 while [ 1 ]
