@@ -107,3 +107,8 @@ This is the script I'm running for my X.org session
 *** Xlaunch
 Launches an X.org server in another display with the given program.
 If no program is given as argument, choose on dmenu (if available).
+*** dmenu_run
+Modificacion of dmenu_run from suckless, that uses an history file to store the most recent commands introduced and display them the first ones on the list.
+
+Requires dmenu and lsx to be installed
+

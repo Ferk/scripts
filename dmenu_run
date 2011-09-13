@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# Modificacion of dmenu_run from suckless, that uses an history file to store the most recent commands introduced and display them the first ones on the list.
+#
+# Requires dmenu and lsx to be installed
+
+
+HISTORY=${XDG_CONFIG_HOME:-"$HOME/.config"}/dmenu_run
+CACHE=${XDG_CACHE_HOME:-"$HOME/.cache"}/dmenu_run
+
+function update() {
+(
+	IFS=: # for $PATH :-sepparated entries
+
+	if test "`ls -dt $PATH "$HISTORY" "$CACHE" 2> /dev/null | sed 1q`" != "$CACHE"; then
+	    # Add the history
+	    tac "$HISTORY" > "$CACHE"
+	    # Add all the executables in PATH
+	    mkdir -p "`dirname "$CACHE"`" && lsx $PATH | sort -u >> "$CACHE"
+	fi
+)
+}
+update
+
+cmd=`dmenu "$@" < "$CACHE"` || exit
+
+grep "$cmd" $HISTORY || {
+    echo "$cmd" >> "$HISTORY"
+    #echo "$cmd" >> "$CACHE"
+    update
+} &
+
+exec sh -c "$cmd"
+
