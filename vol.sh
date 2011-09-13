@@ -4,7 +4,18 @@ percent=$1
 
 if [ -z $percent ]
 then
-    echo "usage: vol.sh [+XX|-XX]"
+    echo "usage: vol.sh [+XX|-XX|mute]"
+    exit
+fi
+
+if [ "$1" == "mute" ] # toggle mute
+then
+    if pacmd dump | grep set-sink-mute | grep yes > /dev/null
+    then
+	pactl set-sink-mute 0 0 # unmute
+    else
+	pactl set-sink-mute 0 1 # mute
+    fi
     exit
 fi
 
@@ -52,6 +63,10 @@ then
         fi
     fi
 fi
+
+
+pactl play-sample x11-bell
+#mplayer /usr/share/sounds/freedesktop/stereo/bell.oga
 
 notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol -h string:synchronous:volume
 echo $display_vol
