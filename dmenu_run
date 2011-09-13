@@ -24,7 +24,7 @@ update
 
 cmd=`dmenu "$@" < "$CACHE"` || exit
 
-grep "$cmd" "$HISTORY" || {
+grep -e "^${cmd}$" "$HISTORY" || {
     echo "$cmd" >> "$HISTORY"
     #echo "$cmd" >> "$CACHE"
     update
