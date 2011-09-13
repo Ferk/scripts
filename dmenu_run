@@ -5,7 +5,7 @@
 # Requires dmenu and lsx to be installed
 
 
-HISTORY=${XDG_CONFIG_HOME:-"$HOME/.config"}/dmenu_run
+HISTORY=${XDG_CONFIG_HOME:-"$HOME/.config"}/dmenu_run.history
 CACHE=${XDG_CACHE_HOME:-"$HOME/.cache"}/dmenu_run
 
 function update() {
@@ -24,7 +24,7 @@ update
 
 cmd=`dmenu "$@" < "$CACHE"` || exit
 
-grep "$cmd" $HISTORY || {
+grep "$cmd" "$HISTORY" || {
     echo "$cmd" >> "$HISTORY"
     #echo "$cmd" >> "$CACHE"
     update
