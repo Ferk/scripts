@@ -99,7 +99,7 @@ Shows a list of files/directories and their size (du -akx) and processes it
 to a human readable tree shape.
 
 *** vol.sh
-Increases/decreases the volume (uses pulseaudio)
+Increases/decreases/(un)mutes the volume (uses pulseaudio)
 
 *** xinit.sh
 This is the script I'm running for my X.org session
@@ -112,3 +112,5 @@ Modificacion of dmenu_run from suckless, that uses an history file to store the 
 
 Requires dmenu and lsx to be installed
 
+*** dxmms2
+Script to manage xmms2 playlist and collections by means of dmenu.

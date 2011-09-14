@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#
+# Script to manage xmms2 playlist and collections
+# by means of dmenu.
+#
+
+## if you wish to start g2xosd here
+#pidof gx2osd || nohup gx2osd &>/dev/null &
+
+pidof xmms2d > /dev/null || xmms2-launcher &
+
+
+list(){
+	nyxmms2 list | grep '\[' | dmenu -i -l 35 |  sed 's|^..\[\([^/]*\).*$|\1|' | xargs -L1 nyxmms2 move && nyxmms2 play
+}
+
+coll() {
+    COL=$(nyxmms2 collection list | dmenu -i ) && {
+	nyxmms2 playlist switch Default
+	nyxmms2 playlist clear
+	nyxmms2 add in:$COL
+    }
+}
+
+
+"$1"
+
+
