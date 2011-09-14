@@ -7,27 +7,22 @@
 
 HISTORY=${XDG_CONFIG_HOME:-"$HOME/.config"}/dmenu_run.history
 CACHE=${XDG_CACHE_HOME:-"$HOME/.cache"}/dmenu_run
-
-function update() {
 (
 	IFS=: # for $PATH :-sepparated entries
 
 	if test "`ls -dt $PATH "$HISTORY" "$CACHE" 2> /dev/null | sed 1q`" != "$CACHE"; then
-	    # Add the history
-	    tac "$HISTORY" > "$CACHE"
 	    # Add all the executables in PATH
 	    mkdir -p "`dirname "$CACHE"`" && lsx $PATH | sort -u >> "$CACHE"
 	fi
 )
-}
-update
 
-cmd=`dmenu "$@" < "$CACHE"` || exit
 
-grep -e "^${cmd}$" "$HISTORY" || {
+cmd=$(tac "$HISTORY" "$CACHE" | dmenu "$@") || exit
+
+
+{ # Update history in background
+    (echo "g/${cmd}/d"; echo 'wq') | ex -s "$HISTORY"
     echo "$cmd" >> "$HISTORY"
-    #echo "$cmd" >> "$CACHE"
-    update
 } &
 
 exec sh -c "$cmd"
