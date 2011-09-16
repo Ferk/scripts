@@ -48,6 +48,10 @@ amixer sset Headphone 100% on
 ## Temperature & battery checking
 statck -d &
 
+## Automatically suspend when computer is idle
+idlescript.sh > idlescript.log &
+
+###
 setwallpaper &
 t &
 browser &

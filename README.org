@@ -114,3 +114,27 @@ Requires dmenu and lsx to be installed
 
 *** dxmms2
 Script to manage xmms2 playlist and collections by means of dmenu.
+*** noise
+
+Generates background whitenoise.
+
+Requires sox
+
+*** idlescript
+
+Keeps waiting until there's a lapse of time with prolonged inactivity from user and system, and sets the computer to suspend status.
+
+Requires pm-utils
+
+*** pomodoro
+
+Script to show notifications on pomodoro timeout, useful following the pomodoro technique book about improving productivity.
+
+*** retry.sh
+
+Repeats the execution of the given command until it returns a zero exit code.
+
+*** flvget.sh
+
+Quit and dirty script to find flv videos from my chromium browser cache.
+

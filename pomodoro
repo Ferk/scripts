@@ -1,0 +1,78 @@
+#!/bin/bash
+#
+# @Time-stamp: <2010-12-29 10:33:59 ferk>
+# @Author: Fernando Carmona Varo
+#
+# [[Pomodoro Technique][ http://www.pomodorotechnique.com/ ]]
+#
+#
+
+notificate='notify-send -u critical -i appointment'
+
+function pomodoro-call() {
+	mins="$1"
+	endmessage="$2"
+	startmessage="$3"
+
+    ## Load default values
+	if [ -z $mins ]
+	then
+		mins=25
+	fi
+	if [ -z $endmessage ]
+	then
+		startmessage="You have $mins minutes left"
+	fi
+	if [ -z $endmessage ]
+	then
+		endmessage="Please stop the work and take a short break"
+	fi
+
+	$notificate -t 2000 "Pomodoro started!" "$startmessage"
+	echo "$startmessage"
+
+	while [ $mins != 0 ]; do
+		sleep 60
+		let "mins = $mins - 1"
+		echo "$mins minutes left";
+	done
+
+	echo "$endmessage"
+	$notificate "Pomodoro ended!" "$endmessage"
+}
+
+
+
+
+case "$1" in
+	"stop")
+		echo "Stopping pomodoro processes..."
+		pkill -STOP -f "$0 *[1-9]"
+		if [ "$?" = "0" ]
+		then
+			$notificate "All pomodoros stopped!" "To make them continue, run \"pomodoro cont\""
+		else
+			echo "Couldn't stop any pomodoro process (no pomodoro running?)"
+		fi
+		exit
+		;;
+	"cont")
+		echo "Resuming pomodoro processes..."
+		pkill -CONT -f "$0 *[1-9]"
+		if [ "$?" = "0" ]
+		then
+			$notificate "All pomodoros resumed!" "The counters will continue as if nothing happened"
+		else
+			echo "Couldn't resume any pomodoro process (no pomodoro found?)"
+		fi
+		exit
+		;;
+	[123456789]*)
+		pomodoro-call $@
+		;;
+	"")
+		pomodoro-call 25
+		;;
+	*)
+		echo "Usage: pomodoro [ stop | cont | minutes [endmessage] [startmessage] ]"
+esac

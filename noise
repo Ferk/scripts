@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Generates background whitenoise
+#
+# Requires sox
+
+case "$1" in
+
+    white)
+        play -n synth whitenoise
+        ;;
+    pink)
+        play -n synth pinknoise
+        ;;
+    brown)
+        play -n synth brownnoise
+        ;;
+    *)
+        play -n synth $@
+        ;;
+esac
+
+
+
+
