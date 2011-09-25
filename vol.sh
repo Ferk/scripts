@@ -1,5 +1,10 @@
 #!/bin/sh
 
+
+# maximum value 
+# Volume 65536 (0x10000) is normal volume, values greater than this amplify the audio signal (with clipping).
+max=0x20000
+
 percent=$1
 
 if [ -z $percent ]
@@ -19,9 +24,10 @@ then
     exit
 fi
 
+
 current_vol=`pacmd dump | grep "set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo" | cut -d " " -f 3`
 
-set_vol=$((current_vol + (percent * 0x10000/100)))
+set_vol=$((current_vol + (percent * max/100)))
 
 
 if [ $((set_vol)) -lt $((0x0)) ]
@@ -30,20 +36,19 @@ then
 	exit
     set_vol=$((0x0))
 else 
-	if [ $((set_vol)) -gt $((0x10000)) ]
+	if [ $((set_vol)) -gt $((max)) ]
 	then
-		echo "Volume can't be set higher"
-		exit
-		set_vol=$((0x10000))
+		echo "Volume can't be set higher"; exit
+		set_vol=$((max))
 	fi
 fi
 
 pactl set-sink-volume 0 $set_vol
 
-display_vol=$((set_vol*100/0x10000))
+display_vol=$((set_vol * 100/max))
 
 
-# Elegir el icono adecuado para la notificación
+# set the proper icon fot the notification
 if [ "$icon_name" = "" ]
 then
     if [ "$display_vol" = "0" ]
@@ -65,9 +70,8 @@ then
 fi
 
 
-pactl play-sample x11-bell
-#mplayer /usr/share/sounds/freedesktop/stereo/bell.oga
 
-notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol -h string:synchronous:volume
+notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol
+
 echo $display_vol
 
