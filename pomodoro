@@ -7,7 +7,13 @@
 #
 #
 
-notificate='notify-send -u critical -i appointment'
+
+function notificate() {
+    beep -f 1000 -r 2 -n -r 5 -l 10 -n &
+    notify-send -u critical -i appointment -t 2000 "$@"
+    echo "$@"
+}
+
 
 function pomodoro-call() {
 	mins="$1"
@@ -28,8 +34,7 @@ function pomodoro-call() {
 		endmessage="Please stop the work and take a short break"
 	fi
 
-	$notificate -t 2000 "Pomodoro started!" "$startmessage"
-	echo "$startmessage"
+	notificate "Pomodoro started!" "$startmessage"
 
 	while [ $mins != 0 ]; do
 		sleep 60
@@ -37,8 +42,7 @@ function pomodoro-call() {
 		echo "$mins minutes left";
 	done
 
-	echo "$endmessage"
-	$notificate "Pomodoro ended!" "$endmessage"
+	notificate "Pomodoro ended!" "$endmessage"
 }
 
 
