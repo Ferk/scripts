@@ -13,11 +13,13 @@
 # can be used for displaying it at applications status line.
 
 
+NOTIFY='notify-send -u critical -i "dialog-warning.png" '
+
 ####
 # tempck: Temperature Checking
 ####
 tempck () {
-    TEMP=$(sensors | grep -o -e "+.....C")
+    TEMP=$(sensors | grep -o -e "+.....C[ \n]")
     NTEMP=$(echo "$TEMP" | cut -c "2-3")
 	AVGTEMP=0
 
@@ -26,7 +28,7 @@ tempck () {
         if [ $i -gt 80 ]
         then
             #notify-send "DANGER!! High temp ($TEMP)" -u critical -i dialog-warning  -h string:synchronouns:"tempsensor"
-            notify-send "DANGER!! High temp ($TEMP)" -u critical -i "/usr/share/icons/Tango/32x32/status/dialog-warning.png" -h string:synchronouns:"tempsensor"
+            $NOTIFY "DANGER!! High temp ($TEMP)"
         fi
 		AVGTEMP=$(echo $AVGTEMP + $i | bc)
     done
@@ -42,9 +44,11 @@ battck () {
 
     for i in $NBATT
     do
-        if [ "$i" -gt "98" -o "$i" -lt "15" ]
+#        if [ "$i" -gt "98" -o "$i" -lt "15" ]
+        if [ "$i" -lt "15" ]
         then
-			notify-send "Battery $BATT!!" -u critical -i "/usr/share/icons/Tango/32x32/status/dialog-warning.png" -h string:synchronouns:"battsensor"
+	    #notify-send "Battery $BATT!!" -u critical -i "dialog-warning.png" -h string:synchronouns:"battsensor"
+	    $NOTIFY "Battery $BATT!!"
         fi
     done
 }
