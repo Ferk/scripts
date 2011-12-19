@@ -138,3 +138,7 @@ Repeats the execution of the given command until it returns a zero exit code.
 
 Quit and dirty script to find flv videos from my chromium browser cache.
 
+
+*** lna
+Wrapper for "ln" so that it's straightforward to create symbolic links using absolute paths.
+

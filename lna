@@ -1,0 +1,20 @@
+#!/bin/sh
+
+#
+# Wrapper for "ln" so that it's straightforward to
+# create symbolic links using absolute paths.
+# 
+
+# discard args until there's a valid target file
+until [ -e "$1" ]
+do 
+    ARGS="$ARGS $1"
+    switch
+done
+
+
+ln -s $ARGS "$(pwd)/$1" "$2"
+
+# TODO: support "lna TARGET TARGET ... DIRECTORY"
+
+
