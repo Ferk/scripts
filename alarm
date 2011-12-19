@@ -42,7 +42,8 @@ else
 
     for (( i=0; i <= 100; i=i+2 ))
     do
-        amixer sset Master playback $i%
+        #amixer sset Master playback $i%
+	vol.sh +2
         sleep 5s
     done
 fi
