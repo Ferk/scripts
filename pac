@@ -1,22 +1,19 @@
 #!/bin/sh
 
-# by Fernando Carmona Varo <ferkiwi@gmail.com>
-
+# Fernando Carmona Varo <ferkiwi@gmail.com>
 # Based on packer by Matthew Bruenig <matthewbruenig@gmail.com>
 
 # Changes:
 # - POSIX compatibility (dash is faster than bash)
 
 # TODO:
-# - Allow for multiple instances to run (package-specific tmpdirs)
+# - Allow for multiple instances to run and download stuff
 # - Remove unneded features
 
 # Licensed under GPL version 3
 
 # set tmpfile stuff, clean tmpdir
 tmpdir="${TMPDIR:-/tmp}/packertmp-$UID"
-rm -rf "$tmpdir" &>/dev/null
-mkdir -p "$tmpdir"
 
 makepkgconf='/etc/makepkg.conf'
 usermakepkgconf="$HOME/.makepkg.conf"
@@ -311,6 +308,10 @@ aurinstall() {
   elif [[ $2 = explicit ]]; then
     runasroot pacman ${PACOPTS[@]} -U $pkgname-*$PKGEXT
   fi
+
+  # Clean tmpdir
+  rm -rf "$dir" &>/dev/null
+  mkdir -p "$dir"
 }
 
 # Goes through all of the install tests and execution ($@ is packages to be installed)
