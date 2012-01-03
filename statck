@@ -21,8 +21,8 @@ NOTIFY='notify-send -u critical -i "dialog-warning.png" '
 tempck () {
     TEMP=$(sensors | grep -o -e "+.....C[ \n]")
     NTEMP=$(echo "$TEMP" | cut -c "2-3")
-	AVGTEMP=0
 
+    AVGTEMP=0
     for i in $NTEMP
     do
         if [ $i -gt 80 ]
@@ -30,9 +30,10 @@ tempck () {
             #notify-send "DANGER!! High temp ($TEMP)" -u critical -i dialog-warning  -h string:synchronouns:"tempsensor"
             $NOTIFY "DANGER!! High temp ($TEMP)"
         fi
-		AVGTEMP=$(echo $AVGTEMP + $i | bc)
+		AVGTEMP=$(($AVGTEMP + $i))
+		N=$(($N+1))
     done
-	AVGTEMP=$(echo -e "${AVGTEMP}/2" | bc)
+	AVGTEMP=$((${AVGTEMP}/${N}))
 }
 
 ####
