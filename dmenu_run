@@ -17,12 +17,12 @@ CACHE=${XDG_CACHE_HOME:-"$HOME/.cache"}/dmenu_run
 )
 
 
-cmd=$(tac "$HISTORY" "$CACHE" | dmenu "$@") || exit
+cmd=$(cat "$HISTORY" "$CACHE" | dmenu "$@") || exit
 
 
 { # Update history in background
     (echo "g/${cmd}/d"; echo 'wq') | ex -s "$HISTORY"
-    echo "$cmd" >> "$HISTORY"
+    sed -i "1 i $cmd" "$HISTORY"
 } &
 
 exec sh -c "$cmd"
