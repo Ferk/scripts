@@ -106,11 +106,11 @@ This is the script I'm running for my X.org session
 
 *** Xlaunch
 Launches an X.org server in another display with the given program.
-If no program is given as argument, choose on dmenu (if available).
+If no program is given as argument, a terminal widnow will be used.
 *** dmenu_run
 Modificacion of dmenu_run from suckless, that uses an history file to store the most recent commands introduced and display them the first ones on the list.
 
-Requires dmenu and lsx to be installed
+Requires dmenu (and stest, which is in the same package)
 
 *** dxmms2
 Script to manage xmms2 playlist and collections by means of dmenu.
@@ -136,7 +136,7 @@ Repeats the execution of the given command until it returns a zero exit code.
 
 *** flvget.sh
 
-Quit and dirty script to find flv videos from my chromium browser cache.
+Quick and dirty script to find flv videos from my chromium browser cache.
 
 
 *** lna
