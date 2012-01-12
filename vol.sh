@@ -3,7 +3,7 @@
 
 # maximum value 
 # Volume 65536 (0x10000) is normal volume, values greater than this amplify the audio signal (with clipping).
-max=0x20000
+max=0x30000
 
 percent=$1
 
@@ -13,7 +13,7 @@ then
     exit
 fi
 
-if [ "$1" == "mute" ] # toggle mute
+if [ "$1" = "mute" ] # toggle mute
 then
     if pacmd dump | grep set-sink-mute | grep yes > /dev/null
     then
@@ -70,8 +70,23 @@ then
 fi
 
 
+notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol -c "$0"
 
-notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol
+# See: http://developer.gnome.org/notification-spec/
+
+# dbus-send --type=method_call --print-reply --dest='org.freedesktop.Notifications' \
+# /org/freedesktop/Notifications org.freedesktop.Notifications.Notify \
+# string:'$0' \
+# uint32:873 \
+# string:'$icon_name' \
+# string:'' \
+# string:'$display_vol% volume' \
+# array:string:'' \
+# dict:string:variant:'urgency',byte:1 \
+# int32:600 2> /dev/null
+
+# Second string of the dict (the value) should be a variant
+# but dbus-send doesn't support variants in dicts
 
 echo $display_vol
 
