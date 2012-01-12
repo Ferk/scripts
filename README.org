@@ -145,3 +145,7 @@ Wrapper for "ln" so that it's straightforward to create symbolic links using abs
 Captures from the camera and changes the brightness of the screen backlight according to the brightness level of the image captured by the cam.
 
 Uses ffmpeg, imagemagick and acpi
+*** t
+Wrapper to execute the default terminal (defined by XTERM variable, which I set in my ~/.profile).
+
+Also, any args received will be executed in a subshell in the terminal, pausing when the exit code is not standard (error).
