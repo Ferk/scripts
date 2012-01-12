@@ -31,13 +31,11 @@ gnome-power-manager &
 
 # nm-applet &
 
-export LANG="es_ES.utf8"
 setxkbmap es
 
 # system beep [volume] [pitch] [duration]
 xset b 10 100 2000
 xset b 0
-
 
 ## Set up soundmixer start values
 amixer sset Master 50% on
@@ -50,6 +48,9 @@ statck -d &
 
 ## Automatically suspend when computer is idle
 idlescript.sh > idlescript.log &
+
+# disable the touchpad tapping when typing
+syndaemon -t -k -i 2 -d &
 
 ###
 setwallpaper &
