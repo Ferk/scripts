@@ -12,9 +12,12 @@ do
     switch
 done
 
-
-ln -s $ARGS "$(pwd)/$1" "$2"
-
-# TODO: support "lna TARGET TARGET ... DIRECTORY"
+if [ -z $3  ]
+then
+    ln -s $ARGS "$(readlink -m "$1")" "$2"
+else
+    echo "This format is not supported for the script: lna TARGET TARGET ... DIRECTORY "
+    # TODO: add support
+fi
 
 
