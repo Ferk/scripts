@@ -9,18 +9,20 @@
 
 APP="$@"
 
-# Ask for an application until it's valid
-while true
-do
-	which $APP 2> /dev/null && break
-	APP=$(dmenu_path | dmenu)
+[ -z $APP ] && APP="urxvt"
 
-	if [[ ! $? -eq 0 ]]
-	then
-		echo "usage: Xlaunch <program>"
-		exit
-	fi
-done
+# # Ask for an application until it's valid
+# while true
+# do
+# 	which $APP 2> /dev/null && break
+# 	APP=$(dmenu_path | dmenu)
+
+# 	if [[ ! $? -eq 0 ]]
+# 	then
+# 		echo "usage: Xlaunch <program>"
+# 		exit
+# 	fi
+# done
 
 DISPLAY=":9"
 
