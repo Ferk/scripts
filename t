@@ -8,7 +8,7 @@
 #
 
 SH="bash"
-[ -z $XTERM ] && TERM="urxvt"
+[ -z $XTERM ] && TERM="xterm"
 
 if [ -z $@ ]
 then
