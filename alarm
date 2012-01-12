@@ -27,20 +27,26 @@ export DISPLAY=:0
 if [ "$1" == "off" ]
 then
     pkill "mplayer"
-    xmms2 stop
+    #xmms2 stop
     pkill "^alarm$"
     amixer sset Master playback 60%
 else
 
-    mplayer ~/Music/alarm -loop 1 &
-    xmms2 playlist load "wakeup"
-    xmms2 play
+    SOUND="$HOME/Music/alarm"
+
+    # Make sure pulseaudio is working
+    pgrep pulseaudio > /dev/null || start-pulseaudio-x11
+
+    test -f "$SOUND" || sox -n -c1 -t ogg "$SOUND" synth sin %-12 sin %-9 sin %-5 sin %-2 fade h 0.1 1 0.9
+    mplayer "$SOUND" -loop 0 -vo null &
+    #xmms2 playlist load "wakeup"
+    #xmms2 play
     
     amixer sset PCM playback 100%
     amixer sset Front playback 100%
     # echo "" | pacmd
 
-    for (( i=0; i <= 100; i=i+2 ))
+     for (( i=0; i <= 50; i=i+2 ))
     do
         #amixer sset Master playback $i%
 	vol.sh +2
