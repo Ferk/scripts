@@ -18,14 +18,16 @@ do
 
     #xsetroot -name "$TIME {$STAT} <$LOAD> -$TRAFIC-"
     xsetroot -name "^[f3;$TIME ^[f2;^[i2;^[f0;$STAT^[i29; ^[f77F;$LOAD^[i15; ^[f292;^[i35;$TRAFIC "
-    sleep 30
+    sleep 40
 done &
 
 #trayer --expand true --widthtype request --transparent true --alpha 255 --edge top --align right --height 15 &
 #trayer &
 
 # Set a known name to the WM so that some programs don't complain
-wmname LG3D
+if hash wname; then wmname LG3D
+else xprop -root -f _NET_WM_NAME 8s -set _NET_WM_NAME "LG3D"
+fi
 
 # Run dwm in loop so it can restart (to close session pkill dwm.sh)
 while [ 1 ]
