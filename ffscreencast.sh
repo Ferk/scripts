@@ -5,19 +5,18 @@
 #START="-ss 00:05:00"
 END="-t  0:30:00"
 
-FNAME="screencast-$(date +%m%d-%H%M).webm"
+FNAME="screencast-$(date +%m%d-%H%M).avi"
 
 SCRSIZE=$(xrandr | grep "*")
 SCRSIZE=$(echo $SCRSIZE | cut -f 1 -d " ")
 
-RATE="-r 15"
+#RATE="-r 15"
 SCREEN="-s $SCRSIZE"
 #xrandr | grep "*" | cut  -f 4 -d " "
 
 #CODEC="-acodec pcm_s16le -vcodec libx264"
-CODEC="-acodec libvorbis -b:a 64k -b:v 256k"
-
-#CODEC="$CODEC -vcodec libx264"
+CODEC=" -b:a 64k -b:v 256k"
+#CODEC="-acodec libvorbis -b:a 64k -b:v 256k"
 
 # Record from microphone
 A_IN="-f pulse -i default"
