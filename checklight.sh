@@ -4,7 +4,7 @@
 # screen backlight according to the brightness level of the
 # image captured by the cam.
 #
-# Uses ffmpeg, imagemagick and acpi
+# Uses ffmpeg, imagemagick, xbacklight and acpi
 #
 
 # Time for the camera to capture
