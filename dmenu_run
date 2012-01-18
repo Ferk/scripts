@@ -19,7 +19,13 @@ cmd=$(
 ${SHELL:-"/bin/sh"} -c "$cmd" &
 
 { # Update history in background
-    [ -z $cmd ] && exit
-    (echo "g/${cmd}/d"; echo 'wq') | ex -s "$HISTORY"
-    sed -i "1 i $cmd" "$HISTORY"
+    [ -z $cmd ] || ! hash ${cmd%% *} && exit
+    ed -s "$HISTORY" || echo $cmd > "$HISTORY"  <<EOF
+g/^${cmd}$/d
+1i
+$cmd
+.
+wq
+EOF
+    
 } &
