@@ -20,12 +20,12 @@ ${SHELL:-"/bin/sh"} -c "$cmd" &
 
 { # Update history in background
     [ -z $cmd ] || ! hash ${cmd%% *} && exit
-    ed -s "$HISTORY" || echo $cmd > "$HISTORY"  <<EOF
+    ed -s "$HISTORY"  <<EOF || echo $cmd > "$HISTORY"
 g/^${cmd}$/d
 1i
 $cmd
 .
 wq
 EOF
-    
+ 
 } &
