@@ -46,7 +46,7 @@ DIFF=$(($(xbacklight -get | cut -f1 -d.) - $LIGHT))
 
 [ $DIFF -gt $TOLERANCE -o $DIFF -lt -$TOLERANCE ] && {
     echo Setting backlight to $LIGHT
-    xbacklight -set ${LIGHT%%.*}
+    xbacklight -set ${LIGHT%%.*} -time 3000
 }
 
 rm "$IMG"
