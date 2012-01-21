@@ -2,8 +2,12 @@
 
 ## Script to record a screencast
 
-#START="-ss 00:05:00"
-END="-t  0:30:00"
+# give me one moment to prepare myself
+echo "** Screencast recording initiating..."
+echo "** press q or issue \"pkill ffmpeg\" for exiting"
+sleep 1
+
+END="-t  0:30:00" # 
 
 FNAME="screencast-$(date +%m%d-%H%M).avi"
 
@@ -27,4 +31,5 @@ A_IN="-f pulse -i 0"
 
 ffmpeg $START $END $A_IN -loglevel info -f x11grab $RATE $SCREEN -i :0.0 $CODEC $@ "$FNAME"
 
+notify-send "${0%%*/}" "Recording finished ($FNAME)"
 echo -e "** Video saved as \e[33m\"$FNAME\"\e[0m"
