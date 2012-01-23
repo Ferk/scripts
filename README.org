@@ -150,3 +150,8 @@ Uses ffmpeg, imagemagick and acpi
 Wrapper to execute the default terminal (defined by XTERM variable, which I set in my ~/.profile).
 
 Also, any args received will be executed in a subshell in the terminal, pausing when the exit code is not standard (error).
+*** arch_reinstall.sh
+Dirty script I use for doing some rutine setup tasks when installing and configuring a new archlinux install.
+*** arch_updatemirrors.sh
+Script to download the full list of arch mirrors, test them and select the fastest ones.
+

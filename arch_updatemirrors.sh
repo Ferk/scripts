@@ -1,7 +1,13 @@
 #!/bin/sh
+#
+# Script to download the full list of arch mirrors,
+# test them and select the fastest ones.
+#
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+#
 
 [ $UID != 0 ] && {
-    sudo $0
+    sudo -l $0 >&- && sudo $0
     exit $?
 }
 

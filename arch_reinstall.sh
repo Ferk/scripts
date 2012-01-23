@@ -1,22 +1,40 @@
 #!/bin/bash
-
+#
+# Dirty script I use for doing some rutine setup tasks when
+# installing and configuring a new archlinux install.
+#
+# Note: I still didn't use it much, probably needs some love
+#
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+#
 
 GIT_CONFIG_REPO=git@github.com:Ferk/xdg_config.git
 
+
+if hash pac 2>$-; then
+    PACMAN=pac
+if hash packer 2>$-; then
+    PACMAN=packer
+if hash yaourt 2>$-; then
+    PACMAN=yaourt
+if hash pacman 2>$-; then
+    PACMAN=pacman
+fi
+
 ######
 # Function definitions
-function msg() {
+msg() {
 	echo -e "\e[33m ** \e[36m$@\e[0m"
 }
 
-function confirm() {
+confirm() {
 	echo "$@"
 	read edit -p "Do you want to edit that? [yN]"
 	[ "$edit" = "N" ] && return
 }
 
-function i() {
-    yaourt -S $@
+i() {
+    $PACMAN --noconfirm -S $@
 }
 
 #######################
@@ -71,7 +89,7 @@ G="$G vmware"   #    Right to use VMware software.
 
 for i in $G
 do
-	sudo gpasswd -a $USER $i
+    sudo gpasswd -a $USER $i
 done
 
 msg "Groups for \"$USER\":"
@@ -81,7 +99,7 @@ groups $USER
 ###################
 msg "Syncing configuration files to $GIT_CONFIG_REPO"
 
-cd ${XDG_CONFIG_HOME:-$HOME/.config/}
+cd ${XDG_CONFIG_HOME:-$HOME/.config/} || { mkdir ~/.config; cd ~/.config; }
 
 if [ -d .git/ ]; then
     git pull
@@ -93,15 +111,24 @@ crontab ./crontab
 ./symlinks.sh
 
 #############
+msg "Singing trusted master keys"
+
+for key in 0xFFF979E7 0xCDFD6BB0 0x4C7EA887 0x6AC6A4C2 0x824B18E8; do
+    pacman-key --recv-keys $key
+    pacman-key --lsign-key $key
+    printf 'trust\n3\nquit\n' | gpg --homedir /etc/pacman.d/gnupg/ \
+        --no-permission-warning --command-fd 0 --edit-key $key
+done
+
+#############
 msg "Installing basic packages"
 
-i goldendict espeak
+i dict goldendict espeak
+
 i aspell aspell-es aspell-en aspell-de 
 i hunspell-es hunspell-en hunspell-de # for loffice/chromium
 
-i proggyfonts terminus-font bdf-unifont ttf-google-webfonts ttf-freefont ttf-liberation ttf-ms-fonts lohit-fonts
-
-i lsof 
+i proggyfonts terminus-font bdf-unifont ttf-google-webfonts ttf-freefont ttf-liberation ttf-ms-fonts lohit-fonts ttf-ipa-mona ttf-monapo
 
 i bsd-games
 
@@ -110,7 +137,7 @@ i imagemagick sxiv gimp asciiview
 i audio-convert mplayer2 vorbis-tools flac lame
 
 i tct # http://www.linux-mag.com/id/1889/
-i unp ncdu lesspipe dtach
+i awk ed lsof unp ncdu lesspipe dtach
 i xmms2
 i nmap gnu-netcat aircrack-ng
 i googletalk-plugin
@@ -124,14 +151,13 @@ i xorg-xmessage xosd beep xsel
 # ebooks
 i calibre 
 
-i ttf-droid ttf-ubuntu-font-family
-
 i gpg
 
 i gettext
 
-i slock swarp 
+i slock swarp dmenu dwm-sprinkles
 
+# Latex
 i texlive-most
 
 # IM
