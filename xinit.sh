@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Only run this script once (checking if some main process is active)
-if ps ax | grep -v grep | grep xbindkeys > /dev/null
+if pgrep xbindkeys >&-
 then
 	echo "xinit.sh: already running processes"
     exit
@@ -14,6 +14,9 @@ xbindkeys &
 
 # Adjust color temperature of the screen according to the position of the sun
 redshift &
+
+# Check if there's a monitor for dualhead
+multihead &
 
 # Run emacs daemon, so the clients start instantly
 #emacs --daemon &
