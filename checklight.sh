@@ -14,8 +14,8 @@ TIMECK=0.05
 TOLERANCE=5
 
 # Limits in brightness level detected
-UPPER=40
-LOWER=25
+UPPER=35
+LOWER=10
 
 acpi -a | grep "off-line" && { # change limits if on battery
     UPPER=60
