@@ -9,7 +9,7 @@
 
 APP="$@"
 
-[ -z $APP ] && APP="urxvt"
+[ -z $APP ] && APP="t"
 
 # # Ask for an application until it's valid
 # while true
@@ -29,12 +29,11 @@ DISPLAY=":9"
 X $DISPLAY -ac &
 
 # If you have nvidia, load it
-# if you don't, you don't need this
-nvidia-settings --load-config-only
+hash nvidia-settings && nvidia-settings --load-config-only
 
+# wait a bit for the new display to load, before executing our app
 sleep 1
 exec $APP
 
 exit
-
 
