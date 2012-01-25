@@ -53,6 +53,11 @@ configuration in different systems with different browsers.
 
 *** camrecord
 A simple script for recording videos with the webcam
+Requires mencoder 
+
+*** camplay
+A simple script for displaying the webcam (good to use when on lack of a mirror :P)
+Requires mplayer 
 
 *** dwm.sh
 Wrapper script around my dwm window manager instalation

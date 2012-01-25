@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# A simple script for displaying the webcam
+# (good to use when on lack of a mirror :P)
+#
+# Fernando Carmona Varo <ferkiwi@gmail.com
+#
+# Requires mplayer 
+
+mplayer tv:// -tv driver=v4l2:device=/dev/video0
