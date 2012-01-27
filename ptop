@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Uses pgrep regular expressions to open top
+# with the processes that match them
+#
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+#
+
+commaize() {
+    read line && echo -n "$line"
+    while read line
+    do echo -n ",$line"
+    done
+}
+
+{ 
+    top -p $(pgrep $@ | commaize); 
+} 2>&- || { pgrep $@ 2>&1 | sed 's/pgrep/ptop/' >&2; exit 1; } 
+
