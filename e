@@ -1,9 +1,7 @@
 #!/bin/bash
 
-#emacs $@
-#exit
 
-OPT="-c -a \"\" "
+OPTS='-c -a ""'
 
 # choose the emacs snapshot version if present
 if [ -e /usr/bin/emacs-snapshot ]
@@ -15,10 +13,10 @@ else
     E="emacs"
 fi
 
-# When executed in terminal, use the terminal emacs
+# When executed in a supported terminal, don't use an X window
 case "$TERM" in
-    xterm*|rxvt*)
-        #OPT="$OPT -nw"
+    xterm*|rxvt*|*-256color)
+        OPTS="$OPTS -nw"
         ;;
     *)
         ;;
@@ -30,15 +28,7 @@ esac
 #     $E --daemon
 # fi
 
-#echo -e "\e[44m ** lauching asynchronous Emacs Client ** \e[00m"
+EXEC="$EC $OPTS $@"
 
-EXEC="$EC $OPT $@"
-
-echo ">>> $EXEC"
+#echo "> $EXEC"
 eval $EXEC
-
-# I dont like the prompt being missing after
-# an asynchronous call, so wait a bit for the output.
-#sleep 0.5
-
-
