@@ -13,6 +13,9 @@ TIMECK=0.05
 # Minimal percent for a change to be made
 TOLERANCE=5
 
+# Maximal change
+TOP=20
+
 # Limits in brightness level detected
 UPPER=35
 LOWER=10
@@ -43,6 +46,8 @@ echo "Brightness detected: ${BRIGHT}%"
 LIGHT=${LIGHT%%.*}
 
 DIFF=$(($(xbacklight -get | cut -f1 -d.) - $LIGHT))
+
+[ $DIFF -gt $TOP ] && DIFF=$TOP
 
 [ $DIFF -gt $TOLERANCE -o $DIFF -lt -$TOLERANCE ] && {
     echo Setting backlight to $LIGHT
