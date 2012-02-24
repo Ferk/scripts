@@ -13,17 +13,11 @@ print "/proc/"$2"/fd/"$4;
 
 [ -z $stream ] && { echo "No active Flash streams were found"; exit 1; }
 
-mplayer -fs  $stream
+mplayer -fs  $stream $@
 sleep 1
 
-# Save file
-if [ $UID = "0" ]; then
-  echo "You shouldn't run me as root!"
-  exit 1
-fi
-
 echo "** SAVE AS... **"
-echo "Type a name for the file (without extension) to be saved"
-echo -n " or just press enter for no saving: "
+echo "Type a filename (without extension) to save in $(pwd)"
+printf " or just press enter for no saving: "
 read save
 [ $save ] && { cp -i $stream "$save.flv" && ls -l "$save.flv"; }
