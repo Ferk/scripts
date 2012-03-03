@@ -1,92 +1,63 @@
 #!/bin/sh
+#
+# Increases/decreases/(un)mutes the volume (uses pulseaudio)
+#
+# Fernando Carmona Varo
+#
 
-
-# maximum value 
-# Volume 65536 (0x10000) is normal volume, values greater than this amplify the audio signal (with clipping).
+# pulseaudio maximum volume value
+# Volume 65536 (0x10000) is normal max, greater values will amplify the audio signal (with clipping).
 max=0x30000
 
 percent=$1
 
 if [ -z $percent ]
 then
-    echo "usage: vol.sh [+XX|-XX|mute]"
+    echo "usage: vol.sh <+XX|-XX|mute>"
     exit
 fi
 
 if [ "$1" = "mute" ] # toggle mute
 then
-    if pacmd dump | grep set-sink-mute | grep yes > /dev/null
+    if pacmd dump | grep "set-sink-mute .* yes" > /dev/null
     then
-	pactl set-sink-mute 0 0 # unmute
+        pactl set-sink-mute 0 0 # unmute
     else
-	pactl set-sink-mute 0 1 # mute
+        pactl set-sink-mute 0 1 # mute
     fi
     exit
 fi
 
 
-current_vol=`pacmd dump | grep "set-sink-volume alsa_output.pci-0000_00_1b.0.analog-stereo" | cut -d " " -f 3`
+current_vol=$(pacmd dump | awk '/set-sink-volume/ { print $3; exit }')
 
 set_vol=$((current_vol + (percent * max/100)))
 
 
 if [ $((set_vol)) -lt $((0x0)) ]
 then
-	echo "Volume can't be set lower"
-	exit
+    echo "Volume can't be set lower"
     set_vol=$((0x0))
-else 
-	if [ $((set_vol)) -gt $((max)) ]
-	then
-		echo "Volume can't be set higher"; exit
-		set_vol=$((max))
-	fi
+else
+    if [ $((set_vol)) -gt $((max)) ]
+    then
+        echo "Volume can't be set higher"; exit
+        set_vol=$((max))
+    fi
 fi
 
 pactl set-sink-volume 0 $set_vol
 
 display_vol=$((set_vol * 100/max))
 
+# notify about the volume change in dwm
+xsetroot -name "volume: $display_vol" && sleep 1 && dwm.sh update &
 
-# set the proper icon fot the notification
-if [ "$icon_name" = "" ]
-then
-    if [ "$display_vol" = "0" ]
-    then
-        icon_name="audio-volume-muted"
-    else
-        if [ "$display_vol" -lt "33" ]
-        then
-            icon_name="audio-volume-low"
-        else
-            if [ "$display_vol" -lt "67" ]
-            then
-                icon_name="audio-volume-medium"
-            else
-                icon_name="audio-volume-high"
-            fi
-        fi
-    fi
-fi
-
-
-notify-send "$display_vol% volume" -t 600 -i $icon_name -h int:value:$display_vol -c "$0"
-
-# See: http://developer.gnome.org/notification-spec/
-
-# dbus-send --type=method_call --print-reply --dest='org.freedesktop.Notifications' \
-# /org/freedesktop/Notifications org.freedesktop.Notifications.Notify \
-# string:'$0' \
-# uint32:873 \
-# string:'$icon_name' \
-# string:'' \
-# string:'$display_vol% volume' \
-# array:string:'' \
-# dict:string:variant:'urgency',byte:1 \
-# int32:600 2> /dev/null
-
-# Second string of the dict (the value) should be a variant
-# but dbus-send doesn't support variants in dicts
+# notify with osd if available
+hash osd_cat 2>$- && {
+    pkill osd_cat
+    osd_cat -O 3 -o 12 -c white -A center -d 1 -f "-*-*-*-*-*-*-*-*-*-*-*-*-*" \
+	-b percentage -P $display_vol
+} &
 
 echo $display_vol
-
