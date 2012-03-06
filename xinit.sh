@@ -44,11 +44,16 @@ xset b 10 100 2000
 # Activate Control+Alt+Backspace to kill X server
 setxkbmap -option terminate:ctrl_alt_bksp
 
-## Set up soundmixer start values
-amixer sset Master 50% on
-amixer sset PCM 100% on
-amixer sset Front 100% on
-amixer sset Headphone 100% on
+## Set up sound and mixer start values
+hash pulseaudio 2>&- && {
+    start-puleaudio-x11
+    pactl set-sink-volume 0 0x05000 # 0x10000 == 100%
+} || {
+    amixer sset Master 50% on
+    amixer sset PCM 100% on
+    amixer sset Front 100% on
+    amixer sset Headphone 100% on
+}
 
 # ## Temperature & battery checking
 # statck -d &
@@ -59,7 +64,7 @@ idlescript.sh > idlescript.log &
 # disable the touchpad tapping when typing
 syndaemon -t -k -i 2 -d &
 
-checkgmail &
+# checkgmail &
 
 ###
 setwallpaper &
