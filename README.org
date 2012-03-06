@@ -151,6 +151,9 @@ terminal, pausing when the exit code is not standard (error).
 *** ptop
 Uses pgrep regular expressions to open top with the processes that match them.
 
+*** pls
+Tool for listing the top CPU-consuming running processes
+it accepts a regexp argument to be specific.
 *** arch_reinstall.sh
 Dirty script I use for doing some rutine setup tasks when installing
 and configuring a new archlinux install.

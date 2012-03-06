@@ -1,0 +1,37 @@
+#!/bin/sh
+#
+# Tool for listing the top CPU-consuming running processes
+# it accepts a regexp argument to be specific.
+#
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+#
+
+
+cmd="ps aux "
+
+# Remove header
+cmd="$cmd | tail -n +2"
+
+# Use first argument as regexp to get the processes
+[ $1 ] && cmd="$cmd | grep -e \"$1\""
+
+# cut the lines that are too long
+[ $COLUMNS ] || COLUMNS=100
+cmd="$cmd | cut -c -$COLUMNS"
+
+# sort them according to the 3rd field (CPU)
+cmd="$cmd | sort -rk3"
+
+# only show top 10
+cmd="$cmd | head -10"
+
+# Print header and command output
+[ $TERM != dumb ] && {
+    H="\e[32m"
+    S="\e[33m"
+    T="\e[0m"
+}
+echo -e "$cmd\n${H}USER       PID ${S}%CPU${H} %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND${T}"
+eval $cmd
+
+
