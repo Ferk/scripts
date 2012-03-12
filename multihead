@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Script to set a multi monitor setup
+# (right now only dual screen, because that's what I need)
+#
+# Fernando Carmona Varo
+#
+
+POSITION="left"
+
+case "$1" in
+    r|right) 
+        POSITION="right"
+        ;;
+    l|left)
+        ;;
+    *)
+	echo "usage: ${0##*/} [r|l]"
+    
+esac
+
+# xrandr -s $SRES
+
+xrandr --auto
+
+BUILTIN="--output LVDS1 -s 0  --primary"
+EXTERN="--output VGA1 --auto -s 0  --${POSITION}-of LVDS1"
+
+xrandr $BUILTIN $EXTERN
+
+setwallpaper
+

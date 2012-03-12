@@ -161,6 +161,8 @@ and configuring a new archlinux install.
 *** arch_updatemirrors.sh
 Script to download the full list of arch mirrors, test them and select the fastest ones.
 
+*** multihead
+Script to set a multi monitor setup. Uses xrandr
 
 ** MIT license (appliable to every script)
 
