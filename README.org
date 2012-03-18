@@ -168,6 +168,8 @@ Script to set a multi monitor setup. Uses xrandr
 Script to umount removable devices from X.
 It's intended to be used in combination with skvm.
 
+*** subsync.sh
+Script for synchronization of SRT subtitle files
 ** MIT license (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
