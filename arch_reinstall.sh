@@ -11,14 +11,10 @@
 GIT_CONFIG_REPO=git@github.com:Ferk/xdg_config.git
 
 
-if hash pac 2>$-; then
-    PACMAN=pac
-if hash packer 2>$-; then
-    PACMAN=packer
-if hash yaourt 2>$-; then
-    PACMAN=yaourt
-if hash pacman 2>$-; then
-    PACMAN=pacman
+if   hash pac 2>$-;    then PACMAN=pac
+elif hash packer 2>$-; then PACMAN=packer
+elif hash yaourt 2>$-; then PACMAN=yaourt
+elif hash pacman 2>$-; then PACMAN=pacman
 fi
 
 ######
@@ -99,7 +95,10 @@ groups $USER
 ###################
 msg "Syncing configuration files to $GIT_CONFIG_REPO"
 
-cd ${XDG_CONFIG_HOME:-$HOME/.config/} || { mkdir ~/.config; cd ~/.config; }
+$XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config/}"
+
+mkdir $XDG_CONFIG_HOME
+cd $XDG_CONFIG_HOME
 
 if [ -d .git/ ]; then
     git pull
@@ -123,46 +122,56 @@ done
 #############
 msg "Installing basic packages"
 
-i dict goldendict espeak
-
+i dict goldendict espeak google-translate
 i aspell aspell-es aspell-en aspell-de 
 i hunspell-es hunspell-en hunspell-de # for loffice/chromium
 
 i proggyfonts terminus-font bdf-unifont ttf-google-webfonts ttf-freefont ttf-liberation ttf-ms-fonts lohit-fonts ttf-ipa-mona ttf-monapo
 
-i bsd-games
-
 i imagemagick sxiv gimp asciiview
-
 i audio-convert mplayer2 vorbis-tools flac lame
+i totem pyxdg
+
+i emacs gdb
 
 i tct # http://www.linux-mag.com/id/1889/
 i awk ed lsof unp ncdu lesspipe dtach
-i xmms2
+i stderred rmshit screenfo
+i bsd-games
 i nmap gnu-netcat aircrack-ng
-i googletalk-plugin
 
-i totem pyxdg
+i xmms2 cmus
 
-i openssh x11-ssh-askpass git bzr subversion
+i chromium googletalk-plugin
+
+i mimeo xdg-utils-mimeo
+
+i openssh x11-ssh-askpass gpg git bzr subversion
 
 i xorg-xmessage xosd beep xsel
 
 # ebooks
 i calibre 
 
-i gpg
-
 i gettext
 
 i slock swarp dmenu dwm-sprinkles
 
+i inotify-tools
+
 # Latex
 i texlive-most
+
+
+# Downloading
+i transmission tucan-hg
 
 # IM
 o pidgin finch irssi
 
+
+
+[ -f /usr/bin/beep ] && sudo chmod 4755 /usr/bin/beep
 
 ###################
 msg "Finished."
