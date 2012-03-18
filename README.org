@@ -164,6 +164,10 @@ Script to download the full list of arch mirrors, test them and select the faste
 *** multihead
 Script to set a multi monitor setup. Uses xrandr
 
+*** xumount
+Script to umount removable devices from X.
+It's intended to be used in combination with skvm.
+
 ** MIT license (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
