@@ -14,7 +14,7 @@ if [ -z $@ ]
 then
     $XTERM
 else
-    $XTERM -e $SH -c "if { $@ ;}; then echo -e '\n\e[32mExiting...'; sleep 2; else echo -e '\n\e[31mEnter to close..'; read ; fi"
+    $XTERM -e $SH -c "if { $@ ;}; then echo -e '\n\e[32mExiting...'; sleep 2; else { echo -e '\n\e[31mPress any key to close...'; read -sn 1; } fi"
 fi
 
 
