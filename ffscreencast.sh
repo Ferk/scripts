@@ -7,7 +7,7 @@ echo "** Screencast recording initiating..."
 echo "** press q or issue \"pkill ffmpeg\" for exiting"
 sleep 1
 
-END="-t  0:30:00" # 
+#END="-t  0:60:00" # 
 
 FNAME="screencast-$(date +%m%d-%H%M).avi"
 

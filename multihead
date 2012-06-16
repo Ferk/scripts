@@ -21,12 +21,13 @@ esac
 
 # xrandr -s $SRES
 
-xrandr --auto
+#xrandr --auto
 
-BUILTIN="--output LVDS1 -s 0  --primary"
-EXTERN="--output VGA1 --auto -s 0  --${POSITION}-of LVDS1"
+BUILTIN="--output LVDS1 --primary  -s 0 --auto"
+EXTERN="--output VGA1 --noprimary -s 0 --${POSITION}-of LVDS1 --auto"
 
 xrandr $BUILTIN $EXTERN
+
 
 setwallpaper
 

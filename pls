@@ -7,13 +7,24 @@
 #
 
 
-cmd="ps aux "
+
+
+# Use first argument as regexp to get the processes
+if [ $1 ]; then
+    cmd="ps u -p "
+    PIDs=$(pgrep $@)
+    [ $? != 0 ] || [ -z "$PIDs" ] && exit
+    for i in $PIDs; do
+	cmd="${cmd}${i},"
+    done
+    cmd=${cmd%,} # remove last ","
+else
+    cmd="ps aux"
+fi
+
 
 # Remove header
 cmd="$cmd | tail -n +2"
-
-# Use first argument as regexp to get the processes
-[ $1 ] && cmd="$cmd | grep -e \"$1\""
 
 # cut the lines that are too long
 [ $COLUMNS ] || COLUMNS=100

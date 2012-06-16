@@ -3,7 +3,7 @@
 $@
 while [ "$?" != "0" ]
 do
-    echo "Retrying..."
+    echo "err=\"$?\" - Retrying..."
     sleep 1
     $@
 done

@@ -12,8 +12,14 @@
 # It has also an option to show the status as a single line (statck -1) which
 # can be used for displaying it at applications status line.
 
-
-NOTIFY='notify-send -u critical -i "dialog-warning.png" '
+hash notify-send 2>&- && {
+    NOTIFY='notify-send -u critical -i "dialog-warning.png" '
+} || {
+    osd() {
+	echo $@ | osd_cat -O 3 -o 12 -c white -A center -d 10 -f "-*-droid sans-*-*-*-*-*-*-*-*-*-*-*" 
+    }
+    NOTIFY='osd'
+}
 
 ####
 # tempck: Temperature Checking

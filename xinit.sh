@@ -33,8 +33,8 @@ setxkbmap es
 # Disable access control so any user can use the DISPLAY
 xhost +
 
-# system beep [volume] [pitch] [duration]
-xset b 10 100 2000
+# system beep [volume] [pitch] [duration(ms)]
+xset b 2 1 200
 #xset b 0
 
 # # synchronize the primary selection and clipboard buffers

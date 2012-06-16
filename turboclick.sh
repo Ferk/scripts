@@ -11,7 +11,9 @@
 #
 # You need xmacro installed.
 
+delay=${1:-100}
+
 while true
 do
-    echo "ButtonPress 1 ButtonRelease 1" | xmacroplay -d 10
+    echo "ButtonPress 1\nDelay 1\nButtonRelease 1" | xmacroplay -d $delay
 done

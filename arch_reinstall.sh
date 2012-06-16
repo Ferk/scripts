@@ -126,7 +126,7 @@ i dict goldendict espeak google-translate
 i aspell aspell-es aspell-en aspell-de 
 i hunspell-es hunspell-en hunspell-de # for loffice/chromium
 
-i proggyfonts terminus-font bdf-unifont ttf-google-webfonts ttf-freefont ttf-liberation ttf-ms-fonts lohit-fonts ttf-ipa-mona ttf-monapo
+i proggyfonts terminus-font bdf-unifont ttf-raghu ttf-google-webfonts ttf-freefont ttf-liberation ttf-ms-fonts ttf-ipa-mona ttf-monapo
 
 i imagemagick sxiv gimp asciiview
 i audio-convert mplayer2 vorbis-tools flac lame
@@ -135,7 +135,7 @@ i totem pyxdg
 i emacs gdb
 
 i tct # http://www.linux-mag.com/id/1889/
-i awk ed lsof unp ncdu lesspipe dtach
+i awk ed lsof unp ncdu lesspipe dtach xprintidle
 i stderred rmshit screenfo
 i bsd-games
 i nmap gnu-netcat aircrack-ng

@@ -32,6 +32,7 @@ fi
 current_vol=$(pacmd dump | awk '/set-sink-volume/ { print $3; exit }')
 
 set_vol=$((current_vol + (percent * max/100)))
+#set_vol=$((current_vol + (percent * 100)))
 
 
 if [ $((set_vol)) -lt $((0x0)) ]
@@ -48,7 +49,8 @@ fi
 
 pactl set-sink-volume 0 $set_vol
 
-display_vol=$((set_vol * 100/max))
+#display_vol=$((set_vol * 100/max))
+display_vol=$((set_vol * 300/max))
 
 # notify about the volume change in dwm
 xsetroot -name "volume: $display_vol" && sleep 1 && dwm.sh update &
@@ -57,7 +59,7 @@ xsetroot -name "volume: $display_vol" && sleep 1 && dwm.sh update &
 hash osd_cat 2>$- && {
     pkill osd_cat
     osd_cat -O 3 -o 12 -c white -A center -d 1 -f "-*-*-*-*-*-*-*-*-*-*-*-*-*" \
-	-b percentage -P $display_vol
+	-b percentage -P $((set_vol * 100/max))
 } &
 
 echo $display_vol

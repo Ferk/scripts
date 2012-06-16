@@ -10,9 +10,9 @@ do
     mplayer $i > /dev/null 2> /dev/null
     echo "R(emove)?"
     read action
-    if [ "r" == "$action" ]
+    if [ r == $action -o R == $action ]
     then
-        echo "Borrando..."
+        echo "Borrando \"$i\"..."
         rm $i
     fi
 done

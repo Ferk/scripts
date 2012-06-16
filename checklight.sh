@@ -10,11 +10,11 @@
 # Time for the camera to capture
 TIMECK=0.05
 
-# Minimal percent for a change to be made
+# Minimal % for a change to be made
 TOLERANCE=5
 
-# Maximal change
-TOP=20
+# Maximal % to change (smaller means smoother)
+TOP=10
 
 # Limits in brightness level detected
 UPPER=35
