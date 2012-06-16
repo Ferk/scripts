@@ -1,0 +1,49 @@
+#!/bin/sh
+#
+# Script to add music/playlists to cmus
+# if no files are given it will toggle playback
+# if no cmus is running, it will open it on a terminal
+#
+# Other arguments:
+# --load-pl   Interactivelly loads a playlist using dmenu,
+#             chosen from $PLDIR directory. 
+#
+# --save-pl   Asks for a name and saves the playlist in the
+#             playlist directory.
+#
+#
+# by Fernando Carmona Varo
+#
+
+PLDIR="$HOME/.cmus/pls/"
+
+
+if ! pgrep "^cmus$" >&-
+then
+  ${XTERM:-xterm} -e cmus
+fi
+
+if [ "$1" ]
+then
+    case "$1" in
+	*.pls)
+	    cmus-remote -P -c 
+	    cmus-remote -P "$1"
+	    ;;
+	--load-pl)
+	    cd $PLDIR
+	    cplay "$(find -iname "*.pl" | dmenu || exit)"
+	    ;;
+	--save-pl)
+	    fname=$(echo | dmenu -p 'Name for the playlist (without .pl)')
+	    [ "$fname" ] || exit
+	    mkdir -p "$PLDIR"
+	    cmus-remote -C "save -p -" > "${PLDIR}/${fname}.pl"
+	    ;;
+	*)
+	    cmus-remote -q $@
+	    ;;
+    esac
+else
+    cmus-remote -u
+fi

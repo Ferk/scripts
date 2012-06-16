@@ -46,6 +46,9 @@ Requires mencoder
 A simple script for displaying the webcam (good to use when on lack of a mirror :P)
 Requires mplayer 
 
+*** cplay
+Simple script for controlling cmus music player.
+It can save and load multiple playlists.
 *** dwm.sh
 Wrapper script around my dwm window manager instalation
 
