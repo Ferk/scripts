@@ -49,6 +49,8 @@ Requires mplayer
 *** cplay
 Simple script for controlling cmus music player.
 It can save and load multiple playlists.
+*** wakeup
+Sets the computer in suspension (to memory) and sets it to automatically wake up at the given time.
 *** dwm.sh
 Wrapper script around my dwm window manager instalation
 

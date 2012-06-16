@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Sets the computer in suspension (to memory)
+# and sets it to automatically wake up at the given time.
+#
+# by Fernando Carmona Varo
+#
+
+
+[ -z "$1" ] && {
+    echo "usage: ${0##*/} <time>"
+    exit
+}
+
+etime=$(date -d "$@" +%s)
+time=$(date -d "$@" +"%D %T")
+
+[ -z $etime ] && exit
+
+
+echo wake at ${time}?
+read
+
+
+[ $etime -gt $(date -d "now" +%s) ] || exit
+
+[ -w /sys/power/state ] || {
+    echo "/sys/power/state: not writable, sudoing"
+    cmd="sudo"
+}
+
+$cmd rtcwake -m mem -vt ${etime}
+
+
