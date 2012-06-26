@@ -19,9 +19,8 @@ case "$1" in
     
 esac
 
-# xrandr -s $SRES
-
-#xrandr --auto
+xrandr --auto # activate connected screens
+xrandr -s 0 # sets highest resolution
 
 BUILTIN="--output LVDS1 --primary  -s 0 --auto"
 EXTERN="--output VGA1 --noprimary -s 0 --${POSITION}-of LVDS1 --auto"
