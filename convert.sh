@@ -34,6 +34,7 @@ while [ "$1" ]; do
             cwebp -quiet -m 6 "$fname" -o "${fname%.*}.webp"
             ;;
 	ogg)
+	    ;;
         *)
             echo "no conversion available for format \"${fext}\": $fname"
     esac || {
