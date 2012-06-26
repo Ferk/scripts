@@ -91,6 +91,9 @@ I use it for displaying it at dwm status line.
 Extracts the image thumbnails stored in the "thumb.db" files left out by windows
 installations.
 
+*** trash
+    Script to manage the (XDG) Trash.
+    It can empty it; move files to it.
 *** tree.sh
 Shows a list of files/directories and their size (du -akx) and processes it
 to a human readable tree shape.

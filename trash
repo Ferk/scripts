@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# Move files to the Trash
+# Without arguments, ask for Trash to be emptied
+#
+# Fernando Carmona Varo
+#
+
+Trash="${XDG_DATA_HOME:-$HOME/.local/share}/Trash/"
+
+trash() {
+    mv "$1" "$Trash/files" || continue
+    cat > "$Trash/info/${1##*/}.trashinfo" <<EOF
+[Trash Info]
+Path=$(readlink -f "$1")
+DeletionDate=$(date +%FT%T)
+EOF
+}
+
+empty() {
+    ls "$Trash"/info/* 2>/dev/null >/dev/null  || { echo "Trash already empty"; exit; }
+
+    echo " Deletion date         Path"
+
+    cat "$Trash"/info/*.trashinfo | awk '
+/Path/          {OFS="="; path=$NF; }
+/DeletionDate/  {OFS="="; date=$NF; }
+/[Trash Info]/  { if(date) { print date "  " path; date=path=""}}
+' | sort
+
+    du -hs "$Trash"
+
+    echo -n "Are you sure you want to purge these files? (y/N) "
+    read sure
+    [ "$sure" = "y" ] && rm -rf "$Trash"/*
+}
+
+# Without arguments, check for emptying the Trash
+[ -z "$1" ] && {
+    empty
+    exit
+}
+
+# Create Trash Folder if missing, and check the files for trashing
+mkdir -p "$Trash/files" "$Trash/info" 2>&-
+while [ -f "$1" ]; do
+    trash "$1"
+    shift
+done
+
+[ "$1" ] && { echo "${0##*/}: file not found: $1"; }
+
