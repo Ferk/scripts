@@ -32,10 +32,9 @@
         #xsetroot -name "$TIME {$STAT} <$LOAD> -$TRAFIC-"
         xsetroot -name "^[f3;$TIME ^[f2;^[i2;^[f0;$STAT^[i29; ^[f77F;$LOAD^[i15; ^[f292;^[i35;$HOSTS "
     }
-
     [ "$1" = "update" ] && {
-        statusupd
-        exit
+	statusupd
+	exit
     }
     [ "$1" = "daemon" ] && {
 	while true
@@ -43,7 +42,7 @@
 	    statusupd
 	    sleep 40
 	done &
-	#exit
+	pgrep "dwm$" >&- && exit
     }
 
     # Set a known name to the WM so that some programs don't complain
