@@ -20,7 +20,8 @@ PLDIR="$HOME/.cmus/pls/"
 
 if ! pgrep "^cmus$" >&-
 then
-  ${XTERM:-xterm} -e cmus
+  ${XTERM:-xterm} -e cmus &
+  while ! pgrep "^cmus$" >&-; do sleep 1; done
 fi
 
 if [ "$1" ]
