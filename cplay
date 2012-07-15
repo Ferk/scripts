@@ -6,7 +6,7 @@
 #
 # Other arguments:
 # --load-pl   Interactivelly loads a playlist using dmenu,
-#             chosen from $PLDIR directory. 
+#             chosen from $PLDIR directory.
 #
 # --save-pl   Asks for a name and saves the playlist in the
 #             playlist directory.
@@ -18,18 +18,17 @@
 PLDIR="$HOME/.cmus/pls/"
 
 
-if ! pgrep "^cmus$" >&-
+if ! pgrep "^cmus$" >/dev/null
 then
   ${XTERM:-xterm} -e cmus &
-  while ! pgrep "^cmus$" >&-; do sleep 1; done
+  while ! cmus-remote -C; do sleep 1; done
 fi
 
 if [ "$1" ]
 then
     case "$1" in
-	*.pls)
-	    cmus-remote -P -c 
-	    cmus-remote -P "$1"
+	*.pl)
+	    cmus-remote -c -P "$1"
 	    ;;
 	--load-pl)
 	    cd $PLDIR
