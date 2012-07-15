@@ -29,7 +29,8 @@ case "$1" in
 	gpg -e "$1"
 	;;
     *)
-	tar cJ "$1" | gpg -o "$1.txz.gpg" -e -
-	ls -lh "$1.txz.gpg"
+	out="${1%/}.txz.gpg"
+	tar cJ "$1" | gpg -o "$out" -e -
+	ls -lh "$out"
 	;;
 esac
