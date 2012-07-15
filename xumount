@@ -11,22 +11,21 @@
     ls /media
     echo "Unmounting every removable storage device found in /media"
     gksudo umount /media/* && echo "Success!" || echo "Operation failed or no mountpoint active."
-} 2>&1 | xmessage -file - -buttons "okay:0,umount other mountpoint:101,remount a removable device:102"
+} |& xmessage -file - -buttons "okay:0,umount other mountpoint:101,remount a removable device:102"
 
 case "$?" in
-    101) 
+    101)
 	point=$( mount | cut -d" " -f 3 | dmenu -p "mountpoint to unmount: ")
 	[ $point  ] && {
             echo "Unmounting $point..."
             gksudo umount $point && echo "Success!" || echo "Operation failed."
-	} | xmessage -file - 
+	} |& xmessage -file - 
 	;;
-    102) 
-	{
+    102)
 	point=$( ls /media | cut -d" " -f 3 | dmenu -p "mountpoint to unmount: ")
 	[ $point  ] && {
-            echo "Mounting $point..."
-            gksudo mount $point && echo "Success!" || echo "Operation failed."
-        } | xmessage -file - 
+	    echo "Mounting $point..."
+	    gksudo mount $point && echo "Success!" || echo "Operation failed."
+        } |& xmessage -file - 
 	;;
 esac
