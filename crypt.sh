@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Wrapper around gpg to encrypt/decrypt files and directories
-# it will also (de)compress them with tar.xz 
+# it will also (de)compress them
 #
 # Fernando Carmona Varo
 #
@@ -25,7 +25,7 @@ case "$1" in
 	;;
 
 # Encrypt (any other file)
-    *.tar*)
+    *.tar|*.tar.*|*.t?z)
 	gpg -e "$1"
 	;;
     *)
