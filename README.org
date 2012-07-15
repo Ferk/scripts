@@ -178,6 +178,10 @@ It's intended to be used in combination with skvm.
 
 *** subsync.sh
 Script for synchronization of SRT subtitle files
+*** crypt.sh
+Wrapper around gpg to encrypt/decrypt files and directories.
+It will also (de)compress them with tar.xz
+
 ** MIT license (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
