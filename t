@@ -7,14 +7,14 @@
 # terminal, pausing when the exit code is not standard (error).
 #
 
-SH="bash"
-[ -z $XTERM ] && TERM="xterm"
 
-if [ -z $@ ]
+XTERM=${XTERM:-"xterm"}
+
+if [ -z "$1" ]
 then
     $XTERM
 else
-    $XTERM -e $SH -c "if { $@ ;}; then echo -e '\n\e[32mExiting...'; sleep 2; else { echo -e '\n\e[31mPress any key to close...'; read -sn 1; } fi"
+    $XTERM -e ${SHELL:-bash} -c "{ $@ ;} && { echo -e '\n\e[32mExiting...';sleep 2;} || { echo -e '\n\e[31mPress any key to close...';read -sn 1;}"
 fi
 
 

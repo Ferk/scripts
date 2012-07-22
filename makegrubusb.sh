@@ -1,65 +1,15 @@
 #!/bin/bash
 
-############################### PROGRAM DETAILS ################################
-##                                                                            ##
-##          FILE:  MultiBootUSB.sh                                            ##
-##                                                                            ##
-##         USAGE:  ./MultiBootUSB.sh                                          ##
-##                                                                            ##
-##       OPTIONS:  ---                                                        ##
-##                                                                            ##
-##   DESCRIPTION:  Shell script to Install multiple linux live distributions  ##
-##                 into USB disk/Flash drive/Pen drive and make it bootable.  ##
-##                                                                            ##
-##  REQUIREMENTS:  Linux, Grub-2                                              ##
-##                                                                            ##
-##          BUGS:  ---                                                        ##
-##                                                                            ##
-##         NOTES:  Run this script with root privilege.                       ##
-##                 Refer doc folder for tutorial with screenshots.            ##
-##                                                                            ##
-##       AUTHORS:  Ramesh & Sundar                                            ##
-##                                                                            ##
-##       VERSION:  Beta 3.0                                                   ##
-##                                                                            ##
-##      REVISION:  001                                                        ##
-##                                                                            ##
-##       UPDATED:  11-July-2010 09:00:00 IST                                  ##
-##                                                                            ##
-##       LICENSE:  GNU General Public License                                 ##
-##                                                                            ##
-################################################################################
-
-
-################################ LICENSE TERMS #################################
-##  This program is free software: you can redistribute it and/or modify      ##
-##  it under the terms of the GNU General Public License as published by      ##
-##  the Free Software Foundation, either version 3 of the License, or         ##
-##  (at your option) any later version.                                       ##
-##                                                                            ##
-##                                                                            ##
-##  This program is distributed in the hope that it will be useful,           ##
-##  but WITHOUT ANY WARRANTY; without even the implied warranty of            ##
-##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             ##
-##  GNU General Public License for more details.                              ##
-##                                                                            ##
-##  You should have received a copy of the GNU General Public License         ##
-##  along with this program.  If not, see <http://www.gnu.org/licenses/>.     ##
-################################################################################
 
 
 
-function error() {
-	echo "Error: $1"
+
+
+error() {
+	echo "${0%%*/}: error: $1"
 	exit 1
 }
 
-
-################################################################################
-##                                                                            ##
-##                      Actual Script starts from here                        ##
-##                                                                            ##
-################################################################################
 
 
 
@@ -85,7 +35,7 @@ LIVE_MOUNT=${TEMPROOT}/live
 
 TEMPFILE=`TEMPFILE 2>/dev/null` || TEMPFILE=${TEMPROOT}/tempfile
 
-WHIPTAIL=whiptail
+WHIPTAIL=dialog
 
 
 ################################################################################
@@ -211,24 +161,78 @@ sudo mkfs.vfat -F 32 -n "USB_Pen" ${USB_DISK}1
 echo "Installing GRUB..."
 
 
-sudo mount -t vfat ${USB_DISK}1 ${USB_MOUNT}
+sudo mount -t vfat ${USB_DISK}1 ${USB_MOUNT} || error "when mounting ${USB_DISK}1"
 
-sudo grub-install --no-floppy --recheck --root-directory=${USB_MOUNT} ${USB_DISK}
+sudo grub-install --no-floppy --recheck --root-directory=${USB_MOUNT} ${USB_DISK} || error "on grub installation"
 
-sudo cat <<EOF>> ${USB_MOUNT}/boot/grub/grub.cfg
+sudo cat <<EOF >> ${USB_MOUNT}/boot/grub/grub.cfg
 
 set default="1"
 set timeout=30
 set color_normal=white/black
 set color_highlight=white/light-gray
 
-menuentry "First Partition of First HDD" {
+GRUB_GFXMODE=800x600x16
+insmod vbe
+
+menuentry "Chainload 1st Partition from 1st Hard Disk" {
 set root=(hd0,1)
 chainloader +1
 }
 
-GRUB_GFXMODE=800x600x16
-insmod vbe
+menuentry "Load loopbacked iso (in /boot/iso)" {
+  configfile autoiso.cfg
+}
+
+EOF
+
+sudo cat <<EOF > ${USB_MOUNT}/boot/grub/autoiso.cfg
+
+
+function loopback_iso_entry {
+    realdev="$1"
+    isopath="$2"
+    loopdev="$3"
+
+    if test -f /boot/grub/loopback.cfg; then
+	cfgpath=/boot/grub/loopback.cfg
+    elif test -f /grub/loopback.cfg; then
+	cfgpath=/grub/loopback.cfg
+    else
+	return 1;
+    fi
+
+    echo loopback.cfg $isopath: yes
+    menuentry "GRUB Loopback Config (${realdev}${isopath})" "$realdev" "$isopath" "$cfgpath" {
+	set device="$2"
+	set iso_path="$3"
+	set cfg_path="$4"
+
+	export iso_path
+	loopback loopdev_cfg "${device}${iso_path}"
+	set root=(loopdev_cfg)
+	configfile $cfg_path
+	loopback -d loopdev_cfg
+    }
+    return 0
+}
+
+
+for file in ${dev}${dir}/*.iso ${dev}${dir}/*.ISO; do
+	if ! test -f "$file"; then continue; fi
+
+	pathname $file isopath
+	if test -z "$dev" -o -z "$isopath"; then continue; fi
+	if ! loopback loopdev_scan "$file"; then continue; fi
+
+	saved_root=$root
+	set root=(loopdev_scan)
+
+	loopback_iso_entry $dev $isopath (loopdev_scan)
+
+	set root=$saved_root
+	loopback -d loopdev_scan
+done
 
 EOF
 

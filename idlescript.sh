@@ -4,7 +4,7 @@
 # inactivity from user and system, and sets the computer to suspend
 # status.
 #
-# Requires pm-utils, xprintidle
+# Requires pm-utils
 #
 # by Fernando Carmona Varo
 #
@@ -30,14 +30,13 @@ do
     sleep $TIMEOUT
 
     HD1=$(cat /sys/block/sda/stat | awk '{print $11}')
-    KB1=$(cat /proc/interrupts | awk '/i8042/ {i += $2+$3}; END { print i }'
+    KB1=$(cat /proc/interrupts | awk '/i8042/ {i += $2+$3}; END { print i }')
     
     echo "[$(date +%F_%H%M)] HD Usage: $(($HD1-$HD0))"
-
-    echo "keys: $((KB1-KB0))"
+    echo "Keyboard activity: $((KB1-KB0))"
 
     # Actions to activate when the Hard Disk is inactive and no user input
-    [ $(($HD1-$HD0)) -lt $IOLIMIT ]  && [ $(xprintidle) -gt ${TIMEOUT}000 ] && { 
+    [ $(($HD1-$HD0)) -lt $IOLIMIT ]  && [ $((KB1-KB0)) = 0 ] && { 
 	echo "Lower than the $IOLIMIT limit. Suspending!!"
         sudo pm-suspend
     }

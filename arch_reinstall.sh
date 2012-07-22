@@ -216,6 +216,7 @@ echo -e "\a"
     beep
 }
 
+dconf write /org/gnome/desktop/interface/gtk-key-theme "'Emacs'"
+
 ###################
 msg "Finished."
-

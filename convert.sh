@@ -26,7 +26,7 @@ while [ "$1" ]; do
 
     echo "converting $fname"
     case $fext in
-        avi|mp4|wmv)
+        avi|mp4|wmv|mkv)
             ffmpeg -i "$fname" $bitrate "${fname%.*}.webm"
             ;;
         png|jpg)

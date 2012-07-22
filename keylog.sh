@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Stores keyboard presses in a log file
 # the logging is stopped pressing the ESC button
@@ -10,37 +10,59 @@
 LOG=${XDG_CACHE_HOME:-"$HOME/.cache"}/$(date +%F_%H%M).log
 
 function log() {
-
-    echo "Writting to \"$LOG\""
-
     while true
     do
-
-	read key
-	[ $? == 0 ] || break
+	read key || break
 
 	# remove first 12 chars
 	key=${key:12}
 
-	echo "--- $key ${#key}"
-	if [ ${#key} == 1 ]
-	then
-	    # Log the key
-	    echo -n $key >> $LOG
-	else
-	    if [ $key == "space" ]
-	    then
-		# space
-		echo -n " " >> $LOG
-	    else
+	case $key in
+	    ?)  # alphanumeric keystroke
+		echo -n $key
+		;;
+	    space)
+		echo -n " "
+		;;
+	    apostrophe)
+		echo -n \'
+		;;
+	    comma)
+		echo -n ','
+		;;
+	    period)
+		echo -n '.'
+		;;
+	    minus)
+		echo -n "-"
+		;;
+	    BackSpace)
+		echo -n "«"
+		;;
+	    Delete)
+		echo -n "»"
+		;;
+	    ISO_Level3_Shift) # AltGr
+		echo -n "¬"
+		;;
+	    Shift_?)
+		echo -n "^"
+		;;
+	    Control_?)
+		echo -ne "\nC^"
+		;;
+	    Super_?)
+		echo -ne "\nS^"
+		;;
+	    *)
 		# add a newline
-		echo " «$key»">> $LOG
-	    fi
-	fi
-
+		echo " «$key»"
+		;;
+	esac
     done
 }
 
+xmacrorec2 -k 9 | grep KeyStrPress | log > $LOG
 
-xmacrorec2 -k 9 | grep KeyStrPress | log
+echo "Writen to \"$LOG\""
 

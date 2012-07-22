@@ -18,7 +18,7 @@
 
 	# check if my neightbor is connected
 	HOSTS=""
-	for h in 4 3 2
+	for h in 1
 	do
 	    ping -c 1 "192.168.1.$h" && HOSTS="${HOSTS}.$h"
 	done
@@ -36,14 +36,15 @@
 	statusupd
 	exit
     }
-    [ "$1" = "daemon" ] && {
-	while true
-	do
-	    statusupd
-	    sleep 40
-	done &
-	pgrep "dwm$" >&- && exit
-    }
+    
+    while true
+    do
+	statusupd
+	sleep 40
+    done &
+
+    # if dwm is already running, only spawn status updater
+    pgrep "dwm$" >&- && exit
 
     # Set a known name to the WM so that some programs don't complain
     if hash wname; then wmname LG3D
