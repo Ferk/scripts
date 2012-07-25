@@ -20,28 +20,29 @@
 ## Variables
 
 # Timeout in seconds
-TIMEOUT=$((10*60))
+TIMEOUT=$((15*60))
 # Disk I/O time to be considered inactive, in milliseconds
-IOLIMIT=$((TIMEOUT*1000 * 20/100 ))
+IOLIMIT=$((TIMEOUT*1000 * 2/100 ))
 
-echo "Limit: $IOLIMIT"
+printf " Timeout:%7d.000 s\n HDLimit:%10d ms\n"  $TIMEOUT $IOLIMIT
 
 ## Script
 
 [ $DISPLAY ] || export DISPLAY=":0"
 
-# weighted milliseconds the HD spent doing I/Os
-HD0=$(cat /sys/block/sda/stat | awk '{print $11}')
-# keyboard interruptions
-KB0=$(cat /proc/interrupts | awk '/i8042/ {print $2; exit}')
+# zeroing these means the first record would be higher, but that doesn't matter
+HD0=0
+KB0=0
 while true
 do
     sleep $TIMEOUT
 
-    HD1=$(cat /sys/block/sda/stat | awk '{print $11}')
+    # weighted milliseconds the Disks spent doing I/Os
+    HD1=$(cat /sys/block/*/stat | awk '{ a += $11 } END {print a}')
+    # keyboard interruptions
     KB1=$(cat /proc/interrupts | awk '/i8042/ {i += $2+$3}; END { print i }')
     
-    echo "[$(date +%F_%H%M)] Activity:  HD:$(($HD1-$HD0)) Keyboard:$((KB1-KB0))"
+    printf "[$(date +'%F %H:%M')] Activity:  HD:%7d Keyboard:%6d\n" $(($HD1-$HD0)) $((KB1-KB0))
 
     # Actions to activate when the Hard Disk is inactive and no user input
     [ $(($HD1-$HD0)) -lt $IOLIMIT ]  && [ $((KB1-KB0)) = 0 ] && { 
