@@ -44,7 +44,10 @@
     done &
 
     # if dwm is already running, only spawn status updater
-    pgrep "dwm$" >&- && exit
+    pgrep "dwm$" >/dev/null && {
+	echo "dwm is already running, a status update daemon has been spawned, but dwm won't be re-run"
+	exit
+    }
 
     # Set a known name to the WM so that some programs don't complain
     if hash wname; then wmname LG3D
