@@ -8,16 +8,19 @@
 
 stream=$(lsof / | grep Flash | awk '{
 sub("[a-z]+","",$4);
-print "/proc/"$2"/fd/"$4;
+print " /proc/"$2"/fd/"$4;
 }')
 
 [ -z "$stream" ] && { echo "No active Flash streams were found"; exit 1; }
-echo "Found Flash streams: $stream"
+echo "Found Flash streams:"
+echo "$stream"
 
-mplayer -fs  ${stream%% *} $@
+stream=${stream##* }
+echo "Playing now: $stream"
+mplayer -fs -quiet $stream $@
 sleep 1
 
-echo "** SAVE AS... **"
+echo "$stream: SAVE AS..."
 echo "Type a filename (without extension) to save in $(pwd)"
 printf " or just press enter for no saving: "
 read save
