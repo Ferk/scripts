@@ -3,6 +3,6 @@
 # Making sure that webcam works
 export LD_PRELOAD=/usr/lib/libv4l/v4l1compat.so
 
-[ $BROWSER ] || BROWSER=$( which chromium || which chromium-browser || which firefox || which dillo )
+[ "$BROWSER" ] || BROWSER=$( which chromium || which chromium-browser || which firefox || which dillo )
 
 eval "$BROWSER $@" &
