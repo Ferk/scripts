@@ -7,7 +7,7 @@
 
 # pulseaudio maximum volume value
 # Volume 65536 (0x10000) is normal max, greater values will amplify the audio signal (with clipping).
-max=0x30000
+max=0x20000
 
 percent=$1
 
