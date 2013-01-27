@@ -10,12 +10,29 @@
 
 GIT_CONFIG_REPO=git@github.com:Ferk/xdg_config.git
 
+trap EXIT finish
+set -a
+finish() {
+    if [ $? != 0 ]
+    then
+	echo "An error was found!! The script aborted"
+    fi
+}
 
-PACMAN=$({ which pac || which packer || which yaourt || which pacman;} 2>/dev/null)
+PACMAN=$({ which yaourt || which pacman;} 2>/dev/null)
 [ -z "$PACMAN" ] && {
     echo "Can't find pacman package installer. Is your system Archlinux?"
     exit 1
 }
+
+if [ $PACMAN = "pacman" ]
+then
+    wget https://raw.github.com/keenerd/packer/master/packer && {
+    pacman -S jshon fakeroot
+    chmod +x /usr/bin/packer
+    PACMAN=/usr/bin/packer
+  }
+fi
 
 ######
 # Function definitions
@@ -42,11 +59,28 @@ o() {
 
 i_install() {
     echo "Installing: $INSTALL_LIST"
-    $PACMAN --noconfirm -S $INSTALL_LIST
+    $PACMAN --noconfirm --needed -S $INSTALL_LIST
 }
 
 #######################
-msg "Setting up groups for user \"$USER\""
+
+if [ "$(id -u)" != 0 ]
+then
+    echo "You need to be root to run this script"
+    exit 1
+fi
+
+# ask for username and create if doesnt exist
+if [ "$USER" = "root" ]
+then
+    echo -n "Enter username for the main user (just press enter if you don't want to create/manage the main user):"
+    read USER
+fi
+
+if [ "$USER" ]
+then
+
+    msg "Setting up groups for user \"$USER\""
 
 # Group          Affected files      Purpose
 G="$G adm"      # /var/log/*     Read access to log files in /var/log
@@ -102,51 +136,40 @@ done
 
 msg "Groups for \"$USER\":"
 groups $USER
+fi
+
+msg "Setting up locale"
+ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
 
-###################
-msg "Syncing configuration files to $GIT_CONFIG_REPO"
-
-$XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config/}"
-
-mkdir -p $XDG_CONFIG_HOME
-cd $XDG_CONFIG_HOME
-
-if [ -d ".git" ]; then
-    git pull
-else
-    git clone $GIT_CONFIG_REPO .
-fi && {
-    ./symlinks.sh
-}
-
-#############
+############# check that ths is correct, it showed an error before
 msg "Signing trusted master keys"
 
-for key in 0xFFF979E7 0xCDFD6BB0 0x4C7EA887 0x6AC6A4C2 0x824B18E8; do
-    sudo pacman-key --recv-keys $key && \
-    sudo pacman-key --lsign-key $key && \
-    printf 'trust\n3\nquit\n' | sudo gpg --homedir /etc/pacman.d/gnupg/ \
-        --no-permission-warning --command-fd 0 --edit-key $key
-done
+pacman-key --init
+pacman-key --populate archlinux &>/dev/null || echo "Error found"
+
 
 #############
-msg "Installing basic packages"
+msg "Installing packages"
+
+## basic
+i base base-devel linux-tools xorg xorg-apps xorg-fonts
+i net-tools wpa_supplicant ethtool rfkill
 
 ## Language Tools
 i dictd goldendict espeak google-translate
-i dictd-gcide dictd-jargon dictd-vera dictd-wn
+i dictd-gcide dictd-jargon dictd-vera #dictd-wn
 i aspell aspell-es aspell-en aspell-de 
 i hunspell-es hunspell-en hunspell-de # for loffice/chromium
 i gettext
 i espeak
 
 ## Fonts
-i ttf-google-webfonts ttf-freefont ttf-liberation proggyfonts terminus-font bdf-unifont ttf-raghu ttf-ipa-mona ttf-monapo otf-ipafont
+i ttf-google-webfonts-git ttf-freefont ttf-liberation proggyfonts terminus-font bdf-unifont ttf-raghu ttf-ipa-mona ttf-monapo otf-ipafont
 i ttf-ms-fonts ttf-vista-fonts
 
 ## Multimedia Tools
-i imagemagick sxiv gimp asciiview
+i imagemagick sxiv gimp #asciiview
 i audio-convert mplayer2 vorbis-tools flac lame ffmpeg sox
 i totem pyxdg vlc
 i xmms2 cmus
@@ -160,30 +183,30 @@ i submarine
 ## Development Tools
 i emacs vim gdb jed 
 i automake cmake
-i openssh x11-ssh-askpass gpg git bzr subversion
+i openssh x11-ssh-askpass git bzr subversion
 i checkbashisms
 i cscope ctags
 
 ## Misc Commandline Tools
-i tct # http://www.linux-mag.com/id/1889/
+#i tct # http://www.linux-mag.com/id/1889/
 i awk ed lsof lsw ncdu lesspipe dtach dvtm moreutils xprintidle mlocate
-i stderred rmshit screenfo
-i unp unrar zip unzip unarj p7zip xz
+i stderred-git #rmshit-git #screenfo
+i atool unrar zip unzip unarj p7zip xz
 i minicom
 i pm-utils
 
 ## Internet
 i firefox chromium lynx netsurf
-i googletalk-plugin flashplugin
-i rtorrent transmission tucan-hg
-i nmap gnu-netcat aircrack-ng gnu-netcat
-i dnsmasq dnsutils netcfg wireless_tools
-i cjdns
+i chromium-libpdf-stable chromium-pepper-flash
+i google-talkplugin flashplugin
+i rtorrent #transmission-gtk tucan-hg
+i nmap gnu-netcat aircrack-ng 
+i dnsmasq dnsutils netcfg wireless_tools wpa_supplicant
 i curl
 i youtube-dl
 
 # eBooks/Documents
-i calibre 
+i fbreader
 i evince
 i pdfedit
 i texlive-most
@@ -207,7 +230,7 @@ i fortune-mod cowsay bsd-games
 i nethack stone-soup hydraslayer tintin moon-buggy bastet
 i puzzles pychess
 i cheese
-i fceux zsnes
+i fceux zsnes-netplay
 
 i_install
 echo -e "\a"
@@ -217,6 +240,23 @@ echo -e "\a"
 }
 
 dconf write /org/gnome/desktop/interface/gtk-key-theme "'Emacs'"
+
+##################
+################### this step after git is installed
+msg "Syncing configuration files to $GIT_CONFIG_REPO"
+
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config/}"
+
+mkdir -p $XDG_CONFIG_HOME
+cd $XDG_CONFIG_HOME
+
+if [ -d ".git" ]; then
+    git pull
+else
+    git clone $GIT_CONFIG_REPO .
+fi && {
+    ./symlinks.sh
+}
 
 ###################
 msg "Finished."
