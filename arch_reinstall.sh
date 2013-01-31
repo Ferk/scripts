@@ -201,7 +201,7 @@ i chromium-libpdf-stable chromium-pepper-flash
 i google-talkplugin flashplugin
 i rtorrent #transmission-gtk tucan-hg
 i nmap gnu-netcat aircrack-ng 
-i dnsmasq dnsutils netcfg wireless_tools wpa_supplicant
+i dnsmasq dnsutils netcfg wireless_tools wpa_supplicant wpa_actiond ifplugd
 i curl
 i youtube-dl
 
