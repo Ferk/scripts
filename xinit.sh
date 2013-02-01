@@ -33,6 +33,8 @@ setxkbmap es
 # Disable access control so any user can use the DISPLAY
 xhost +
 
+xbacklight = 75
+
 # system beep [volume] [pitch] [duration(ms)]
 xset b 2 1 200
 #xset b 0
