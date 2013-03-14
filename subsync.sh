@@ -13,7 +13,10 @@ Time format= hour:minute:second.
 EOF
 }
 
-if [ $# -eq 3 ]; then
+do_sync() {
+    local srtfile="$1"
+    local newsrt="${srtfile}.synced"
+
     cat "$1"|sed 's/ --> /:/'|gawk -v delay=$2 -v multi=$3 '
 BEGIN { FS=":" } 
 NF<4 { print $0 } 
@@ -38,9 +41,18 @@ if (length(es)<6) es=es"0";
 if (length(ss)<6) ss=ss"0";
 $0=sh":"sm":"ss" --> "eh":"em":"es;gsub("\\.",",");
 print
-}' && exit 0;
+}' > "$newsrt" 
 
-elif [ $# -eq 4 ]; then
+    mv -v --backup=numbered "$srtfile"  "${srtfile}.old"
+    mv -v "$newsrt" "$srtfile"
+}
+
+
+if [ $# -eq 3 ]
+then
+    do_sync "$@" && exit 0
+elif [ $# -eq 4 ]
+then
     echo $@|sed 's/ /:/g'|gawk '
 BEGIN {FS=":"} 
 {a1=$1*3600+$2*60+$3;a2=$4*3600+$5*60+$6;a3=$7*3600+$8*60+$9;a4=$10*3600+$11*60+$12; multi=(a4-a2)/(a3-a1);delay=a4-a3*multi;print "Time Delay :",delay,"\nMultiplier :",multi;estim1=a1*multi+delay;estim2=a3*multi+delay}' && exit 0;
