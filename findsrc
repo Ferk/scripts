@@ -1,0 +1,21 @@
+#!/bin/sh
+
+show_usage() {
+
+    car <<EOF 
+  usage: $0 [directory name] <regular expression to search for>
+EOF
+    exit
+}
+
+if [ "$2" ]
+then
+    DIR="$1"
+    REGEX="$2"
+fi
+if ! [ "$1"  ] || [ "$3" ]
+then
+    show_usage
+fi
+
+grep "$DIR" --color=always --exclude-dir=.svn --exclude-dir=node_modules -nHre "$REGEX" | less -R -F -X

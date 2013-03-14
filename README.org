@@ -182,6 +182,10 @@ Script for synchronization of SRT subtitle files
 Wrapper around gpg to encrypt/decrypt files and directories.
 It will also (de)compress them with tar.xz
 
+*** apt-clean.sh
+Script for APT package manager based systems, for cleaning it up of installed packages, and clearing cache files.
+*** findsrc
+Searches recursivelly the directory for files matching a specific regex
 ** MIT license (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
