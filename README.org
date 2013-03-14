@@ -49,14 +49,16 @@ Requires mplayer
 *** cplay
 Simple script for controlling cmus music player.
 It can save and load multiple playlists.
+
 *** wakeup
 Sets the computer in suspension (to memory) and sets it to automatically wake up at the given time.
+
 *** dwm.sh
 Wrapper script around my dwm window manager instalation
 
 *** e
 Not really very useful anymore, since emacs already improved emacsclient invocation,
-but this is my wrapper around emacs.
+but this was my wrapper around emacs.
 
 *** ffscreencast.sh
 Uses ffmpeg to record a screencast
@@ -68,7 +70,7 @@ Uploads a image to imgurl
 Script for making bootable usb sticks
 
 *** mount.iso
-I don't want to remember what are the arguments for mounting an iso image, so I
+I don't want to remember the arguments for mounting an iso image, so I
 made this script to use it instead.
 
 *** powersave.sh
@@ -88,8 +90,7 @@ It has also an option to show the status as a single line (statck -1) which
 I use it for displaying it at dwm status line.
 
 *** thumb-extract
-Extracts the image thumbnails stored in the "thumb.db" files left out by windows
-installations.
+Extracts the image thumbnails stored in the "thumb.db" files left out by windows.
 
 *** trash
     Script to manage the (XDG) Trash.
@@ -102,11 +103,11 @@ to a human readable tree shape.
 Increases/decreases/(un)mutes the volume (uses pulseaudio)
 
 *** xinit.sh
-I run this script at the start of my X.org session. It's intended to be independent of what WM I run.
+This script is called from my .xinitrc at the start of my X.org session, before launching the WM.
 
 *** Xlaunch
 Launches an X.org server in another display with the given program.
-If no program is given as argument, a terminal widnow will be used.
+If no program is given as argument, a terminal window will be used instead.
 
 *** dmenu_run
 Modificacion of dmenu_run from suckless. It uses a history file to
@@ -125,13 +126,13 @@ Requires sox
 
 *** idlescript
 Keeps waiting until there's a lapse of time with prolonged inactivity
-from user and system, and sets the computer to suspend status.
+from user and system, and then sets the computer to suspend status.
 
 Requires pm-utils
 
 *** pomodoro
-Script to show notifications on pomodoro timeout, useful following the
-pomodoro technique book about improving productivity.
+Script to show notifications on pomodoro timeout, useful to follow the
+pomodoro technique book about improving productivity, or as a multi-purpose timer (the coundown minutes can be set as arguments).
 
 *** retry.sh
 Repeats the execution of the given command until it returns a zero exit code.
@@ -154,7 +155,7 @@ Uses ffmpeg, imagemagick and acpi
 Wrapper to execute the default terminal (defined by XTERM variable, which I set in my ~/.profile).
 
 Also, any args received will be executed in a subshell in the
-terminal, pausing when the exit code is not standard (error).
+terminal, if the command exits with an error the terminal will pause before exiting.
 
 *** ptop
 Uses pgrep regular expressions to open top with the processes that match them.
@@ -178,28 +179,14 @@ It's intended to be used in combination with skvm.
 
 *** subsync.sh
 Script for synchronization of SRT subtitle files
+
 *** crypt.sh
 Wrapper around gpg to encrypt/decrypt files and directories.
-It will also (de)compress them with tar.xz
+It will also (de)compress them as tar.xz
 
-** MIT license (appliable to every script)
+**  WTFPL License (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
+These scripts are free software. They come without any warranty, to the extent permitted by applicable law. You can redistribute and/or modify any of them under the terms of the Do What The Fuck You Want To Public License, Version 2. See http://www.wtfpl.net/ for more details.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
