@@ -1,0 +1,24 @@
+#!/bin/sh
+
+show_usage() {
+
+    cat <<EOF 
+  usage: ${0##*/} [directory] <regex>
+EOF
+    exit
+}
+
+if [ "$2" ]
+then
+    DIR="$1"
+    REGEX="$2"
+else
+    DIR="."
+    REGEX="$1"
+fi
+if [ -z "$REGEX"  ] || [ "$3" ]
+then
+    show_usage
+fi
+
+grep "$DIR" --color=always --exclude=.svn --exclude=node_modules -nHre "$REGEX" | less -R -F -X
