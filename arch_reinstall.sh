@@ -227,7 +227,7 @@ i pidgin finch irssi
 
 ## Games and other silly stuff
 i fortune-mod cowsay bsd-games
-i nethack stone-soup hydraslayer tintin moon-buggy bastet
+i nethack stone-soup hydraslayer tintin moon-buggy bastet enigma
 i puzzles pychess
 i cheese
 i fceux zsnes-netplay
