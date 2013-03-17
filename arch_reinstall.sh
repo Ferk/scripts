@@ -73,13 +73,12 @@ fi
 # ask for username and create if doesnt exist
 if [ "$USER" = "root" ]
 then
-    echo -n "Enter username for the main user (just press enter if you don't want to create/manage the main user):"
+    echo -n "Enter username for the main user (empty for no user changes):"
     read USER
 fi
 
 if [ "$USER" ]
 then
-
     msg "Setting up groups for user \"$USER\""
 
 # Group          Affected files      Purpose
@@ -141,8 +140,6 @@ fi
 msg "Setting up locale"
 ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
 
-
-############# check that ths is correct, it showed an error before
 msg "Signing trusted master keys"
 
 pacman-key --init
@@ -196,7 +193,7 @@ i minicom
 i pm-utils
 
 ## Internet
-i firefox chromium lynx netsurf
+i firefox chromium netsurf elinks
 i chromium-libpdf-stable chromium-pepper-flash
 i google-talkplugin flashplugin
 i rtorrent #transmission-gtk tucan-hg
@@ -243,20 +240,23 @@ dconf write /org/gnome/desktop/interface/gtk-key-theme "'Emacs'"
 
 ##################
 ################### this step after git is installed
-msg "Syncing configuration files to $GIT_CONFIG_REPO"
+msg "Fetching configuration files from $GIT_CONFIG_REPO"
 
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config/}"
 
-mkdir -p $XDG_CONFIG_HOME
-cd $XDG_CONFIG_HOME
-
-if [ -d ".git" ]; then
+if [ -d "$XDG_CONFIG_HOME/.git" ]; then
+    cd $XDG_CONFIG_HOME
     git pull
-else
-    git clone $GIT_CONFIG_REPO .
+else 
+    if [ -d "$XDG_CONFIG_HOME" ]; then
+	# Move the existing .config to backup it
+	mv "$XDG_CONFIG_HOME" "${XDG_CONFIG_HOME}.old"
+    fi
+    mkdir -p $XDG_CONFIG_HOME
+    git clone -q $GIT_CONFIG_REPO "$XDG_CONFIG_HOME"
 fi && {
-    ./symlinks.sh
+    "$XDG_CONFIG_HOME/symlinks.sh"
 }
 
 ###################
-msg "Finished."
+msg "Successfully finished."
