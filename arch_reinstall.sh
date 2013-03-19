@@ -192,6 +192,10 @@ i atool unrar zip unzip unarj p7zip xz
 i minicom
 i pm-utils
 
+## Networking
+i avahi-daemon avahi-utils
+i openssh gpg keychain
+
 ## Internet
 i firefox chromium netsurf elinks
 i chromium-libpdf-stable chromium-pepper-flash
