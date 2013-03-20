@@ -1,0 +1,63 @@
+#!/usr/bin/php
+<?php # -*- php -*- 
+#
+# PHP implementation of jsonpipe
+#
+# Original implementation (in python) here: https://github.com/zacharyvoase/jsonpipe
+#
+
+#
+# Note that unlike the original implementation
+# This one will not show empty arrays or objects as [] and {}
+# it will skip these elements entirely
+#
+
+$stdin = file_get_contents("php://stdin");
+$json_input= @json_decode($stdin,true);
+
+if (is_null($json_input)
+    && json_last_error() !== JSON_ERROR_NONE) {
+  #json_decode($stdin,true); # parse again with warnings enabled to provide debug output
+  exit("Invalid JSON input\n");
+}
+
+
+function jsonprint($json,$keypath='')
+{
+  switch (gettype($json))
+  {
+  case "integer":
+  case "double":
+    echo "$keypath $json\n";
+    break;
+
+  case "NULL":
+    echo "$keypath null\n";
+    break;
+
+  case "boolean":
+    echo "$keypath ";
+    if($json)
+      echo "true\n";
+    else
+      echo "false\n";
+    break;
+
+  case "string":
+    # quote it
+    echo "$keypath \"".$json."\"\n";
+    break;
+
+  default:
+    # It's not a final element, recurse on it and add the key to the path
+    foreach ($json as $key => $value) {
+      jsonprint($value, $keypath."/".$key);
+    }
+  }
+}
+
+jsonprint($json_input);
+
+#var_dump($json_input);
+
+?>

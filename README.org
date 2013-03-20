@@ -190,6 +190,8 @@ Script for APT package manager based systems, for cleaning it up of installed pa
 *** findsrc
 Searches recursivelly the directory for files matching a specific regex
 
+*** jsonpipe
+Simple implementation of jsonpipe (https://github.com/zacharyvoase/jsonpipe) in PHP.
 **  WTFPL License (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
