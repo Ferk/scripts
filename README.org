@@ -190,6 +190,8 @@ Script for APT package manager based systems, for cleaning it up of installed pa
 *** findsrc
 Searches recursivelly the directory for files matching a specific regex
 
+*** colortable.sh
+Just a simple typical display of colors supported by the terminal
 **  WTFPL License (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo

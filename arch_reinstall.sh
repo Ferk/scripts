@@ -10,8 +10,9 @@
 
 GIT_CONFIG_REPO=git@github.com:Ferk/xdg_config.git
 
-trap EXIT finish
 set -a
+
+trap finish EXIT
 finish() {
     if [ $? != 0 ]
     then
@@ -73,12 +74,20 @@ fi
 # ask for username and create if doesnt exist
 if [ "$USER" = "root" ]
 then
-    echo -n "Enter username for the main user (empty for no user changes):"
-    read USER
+    read USER -p "Enter username for the main user (empty for no user changes): "
 fi
 
 if [ "$USER" ]
 then
+    id "$USER" || {
+	read yn -p "Create new user '$USER'? (yN):"
+	if [ $yn = y ]
+	then
+	    adduser $USER
+	else
+	    break
+	fi
+    }
     msg "Setting up groups for user \"$USER\""
 
 # Group          Affected files      Purpose
@@ -166,10 +175,12 @@ i ttf-google-webfonts-git ttf-freefont ttf-liberation proggyfonts terminus-font 
 i ttf-ms-fonts ttf-vista-fonts
 
 ## Multimedia Tools
-i imagemagick sxiv gimp #asciiview
+i imagemagick sxiv gimp gimp-webp-bzr #asciiview
 i audio-convert mplayer2 vorbis-tools flac lame ffmpeg sox
 i totem pyxdg vlc
-i xmms2 cmus
+i cmus #xmms2
+i icat-git imlib2-webp-git
+i hsetroot
 i pitivi
 i cdparanoia
 i exfalso exiv2
