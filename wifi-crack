@@ -6,8 +6,8 @@ alias dmenu='dmenu -nb "#333" -nf "#ccc" -sb "#111" -sf "#ff0"'
 WLANI=$(echo /proc/sys/net/ipv4/conf/w* | sed "s%.*/%%")
 
 # Only root may pass
-[ $USER = root ] || {
-    sudo $0
+[ $UID = 0 ] || {
+    gksudo $0 "$@"
     exit
 }
 

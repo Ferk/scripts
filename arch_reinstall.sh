@@ -153,7 +153,7 @@ msg "Signing trusted master keys"
 
 pacman-key --init
 pacman-key --populate archlinux &>/dev/null || echo "Error found"
-
+pacman-key --refresh-keys
 
 #############
 msg "Installing packages"
@@ -202,6 +202,10 @@ i stderred-git #rmshit-git #screenfo
 i atool unrar zip unzip unarj p7zip xz
 i minicom
 i pm-utils
+
+## Networking
+i avahi-daemon avahi-utils
+i openssh gpg keychain
 
 ## Internet
 i firefox chromium netsurf elinks
