@@ -3,10 +3,11 @@
 # chroot script
 #
 
-if [ $(id -u) != 0 ]
+if [ "$(id -u)" != 0 ]
 then
     echo "You need to be root to run chroot"
-    exit 1
+    sudo "$(readlink -e "$0")" "$@"
+    exit $?
 fi
 
 rootd=$PWD
