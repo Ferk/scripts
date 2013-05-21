@@ -12,9 +12,19 @@ fi
 rootd=$PWD
 echo "New root: $rootd"
 
-if ! [ -x "$rootd/bin/bash" ]
+for cmd in "$rootd/bin/bash" "$rootd/bin/sh"
+do
+    if [ -x "$cmd" ]
+    then
+	CMD=${cmd#$rootd}
+	break
+    fi
+done
+
+
+if [ -z "$CMD" ]
 then
-    echo "No $rootd/bin/bash file found. Won't set this directory as root."
+    echo "No shell found in the directory tree. Won't set it as root."
     exit 2
 fi
 
@@ -24,6 +34,6 @@ mount -t sysfs sys "$rootd/sys/"
 mount -o bind /dev "$rootd/dev/"
 mount -t devpts pts "$rootd/dev/pts/"
 
-chroot "$rootd" "$@"
+chroot "$rootd" "$CMD"
 
 
