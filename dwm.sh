@@ -60,7 +60,7 @@ pgrep "dwm$" >/dev/null && {
 }
 
 # Set a known name to the WM so that some programs don't complain
-if hash wmname &>/dev/null
+if hash wmname >/dev/null 2>&1
 then 
     wmname LG3D
 else 

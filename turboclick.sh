@@ -15,5 +15,5 @@ delay=${1:-100}
 
 while true
 do
-    echo "ButtonPress 1\nDelay 1\nButtonRelease 1" | xmacroplay -d $delay
+    printf "ButtonPress 1\nDelay 1\nButtonRelease 1" | xmacroplay -d $delay
 done

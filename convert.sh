@@ -50,6 +50,6 @@ done
 if [ "$errors" ]
 then
     echo "Errors were found in the following files and they were not converted:"
-    echo -e "$errors"
+    printf "$errors"
 fi
 

@@ -65,9 +65,9 @@ battck () {
 if [ "$#" -eq "0" ]
 then
     tempck
-    echo -e "- Temp:\n$TEMP"
-	battck
-	[ -n "$BATT" ] && echo -e "- Batt:\n$BATT"
+    printf "- Temp:\n$TEMP"
+    battck
+    [ -n "$BATT" ] && printf "- Batt:\n$BATT"
 else
     if [ "$1" = "-d" ]
     then
@@ -84,8 +84,8 @@ else
 			tempck
 			battck
 			#echo "♨${AVGTEMP}ºC♨ ⚡${BATT}⚡"
-			echo -n "${AVGTEMP}ºC"
-			test -n "$BATT" && echo -n "|${BATT}"
+			printf "${AVGTEMP}ºC"
+			test -n "$BATT" && printf "|${BATT}"
 			echo
 		else
 			echo "usage: checktemp [-d] [-1]"

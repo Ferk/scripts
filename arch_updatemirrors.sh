@@ -6,7 +6,7 @@
 # Fernando Carmona Varo <ferkiwi@gmail.com>
 #
 
-[ $UID != 0 ] && {
+[ "$(id -ru)" != 0 ] && {
     sudo -l $0 >&- && sudo $0
     exit $?
 }

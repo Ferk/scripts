@@ -9,7 +9,7 @@
 
 LOG=${XDG_CACHE_HOME:-"$HOME/.cache"}/$(date +%F_%H%M).log
 
-function log() {
+log() {
     while true
     do
 	read key || break
@@ -19,40 +19,40 @@ function log() {
 
 	case $key in
 	    ?)  # alphanumeric keystroke
-		echo -n $key
+		printf $key
 		;;
 	    space)
-		echo -n " "
+		printf " "
 		;;
 	    apostrophe)
-		echo -n \'
+		printf \'
 		;;
 	    comma)
-		echo -n ','
+		printf ','
 		;;
 	    period)
-		echo -n '.'
+		printf '.'
 		;;
 	    minus)
-		echo -n "-"
+		printf "-"
 		;;
 	    BackSpace)
-		echo -n "«"
+		printf "«"
 		;;
 	    Delete)
-		echo -n "»"
+		printf "»"
 		;;
 	    ISO_Level3_Shift) # AltGr
-		echo -n "¬"
+		printf "¬"
 		;;
 	    Shift_?)
-		echo -n "^"
+		printf "^"
 		;;
 	    Control_?)
-		echo -ne "\nC^"
+		printf "\nC^"
 		;;
 	    Super_?)
-		echo -ne "\nS^"
+		printf "\nS^"
 		;;
 	    *)
 		# add a newline
