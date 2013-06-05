@@ -42,7 +42,7 @@ cmd="$cmd | head -10"
     S="\e[33m"
     T="\e[0m"
 }
-echo -e "$cmd\n${H}USER       PID ${S}%CPU${H} %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND${T}"
+printf "$cmd\n${H}USER       PID ${S}%CPU${H} %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND${T}\n"
 eval $cmd
 
 
