@@ -3,9 +3,14 @@
 
 #+BEGIN_COMMENT
 
+# This README.org is actually a script itself.
+# When it's run with "sh README.org" it will autogenerate
+# the documentation from the scripts that have set comments
+# between delimiting "#---" comments.
+
 cd "$(dirname "$0")"
 
-{ # This code is showing because github org-mode implementation is flawed
+{ # This code is showing because github org-mode implementation is flawed #
     sed -n '1,/^# BEGIN_DESCRIPTIONS/p' "$0"
 
     for script in *
