@@ -1,12 +1,13 @@
 #!/bin/bash
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+
+#-----
 # Dirty script I use for doing some rutine setup tasks when
 # installing and configuring a new archlinux install.
 #
 # Note: I still didn't use it much, probably needs some love
-#
-# Fernando Carmona Varo <ferkiwi@gmail.com>
-#
+#----
 
 GIT_CONFIG_REPO=git@github.com:Ferk/xdg_config.git
 
@@ -36,7 +37,7 @@ then
 fi
 
 ######
-# Function definitions
+#{{{ Function definitions
 msg() {
 	echo -e "\e[33m ** \e[36m$@\e[0m"
 }
@@ -64,6 +65,7 @@ i_install() {
 }
 
 #######################
+#{{{ Execution
 
 if [ "$(id -u)" != 0 ]
 then
@@ -71,7 +73,7 @@ then
     exit 1
 fi
 
-# ask for username and create if doesnt exist
+#####{{{ User set up (add the right groups)
 if [ "$USER" = "root" ]
 then
     read USER -p "Enter username for the main user (empty for no user changes): "
@@ -156,6 +158,7 @@ pacman-key --populate archlinux &>/dev/null || echo "Error found"
 pacman-key --refresh-keys
 
 #############
+##{{{ Package installation
 msg "Installing packages"
 
 ## basic
@@ -206,6 +209,7 @@ i pm-utils
 ## Networking
 i avahi-daemon avahi-utils
 i openssh gpg keychain
+i aircrack-ng
 
 ## Internet
 i firefox chromium netsurf elinks
@@ -222,6 +226,10 @@ i fbreader
 i evince
 i pdfedit
 i texlive-most
+
+# Disk management and recovery utilities
+i parted gparted ntfs-3g
+i testdisk
 
 ## Desktop Environment related
 i slock swarp dmenu dwm-sprinkles

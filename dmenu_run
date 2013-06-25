@@ -1,11 +1,14 @@
 #!/bin/sh
 
-# Modificacion of dmenu_run from suckless, that uses an history file to store the most recent commands introduced and display them the first ones on the list.
+# Fernando Carmona Varo <ferkiwi@gmail.com
+
+#----
+# Modified dmenu_run from suckless, that uses an history file to store
+# the most recent commands introduced and display them the first ones
+# on the list.
 #
 # Requires dmenu (and stest, which is in the same package)
-#
-# Fernando Carmona Varo <ferkiwi@gmail.com>
-#
+#----
 
 HISTORY=${XDG_CONFIG_HOME:-"$HOME/.config"}/dmenu_run.history
 CACHE=${XDG_CACHE_HOME:-"$HOME/.cache"}/dmenu_run

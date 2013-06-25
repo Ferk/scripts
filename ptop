@@ -1,10 +1,11 @@
 #!/bin/sh
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+
+#----
 # Uses pgrep regular expressions to open top
 # with the processes that match them
-#
-# Fernando Carmona Varo <ferkiwi@gmail.com>
-#
+#----
 
 commaize() {
     read line && echo -n "$line"

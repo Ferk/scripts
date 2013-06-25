@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#---
+# Quick and dirty script to find flv videos from my chromium browser cache.
+#---
+
 cd ~/.cache/chromium/Default/Cache/
 
 VIDEOS=$(file * | grep Video | cut -f 1 -d:)

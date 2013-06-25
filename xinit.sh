@@ -1,5 +1,10 @@
 #!/bin/sh
 
+#---
+# This script is called from my .xinitrc at the start of my X.org session,
+# before launching the WM.
+#---
+
 # Only run this script once (checking if some main process is active)
 if pgrep xbindkeys >&-
 then

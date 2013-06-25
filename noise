@@ -1,8 +1,10 @@
 #!/bin/sh
 
+#----
 # Generates background whitenoise
 #
 # Requires sox
+#----
 
 case "$1" in
 

@@ -1,10 +1,11 @@
 #!/bin/sh
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+
+#---
 # Wrapper around gpg to encrypt/decrypt a file or directory
 # it will also (de)compress them
-#
-# Fernando Carmona Varo
-#
+#---
 
 [ -e "$1" ] && [ -z "$2" ] || {
     echo "Usage: ${0##*/} <file or directory>"

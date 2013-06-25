@@ -2,9 +2,9 @@
 
 # Fernando Carmona Varo
 
-##
-# Wrapper script around my dwm
-##
+#---
+# Wrapper script around my dwm window manager
+#---
 
 
 BUILDIR="$XDG_CONFIG_HOME/dwm/"

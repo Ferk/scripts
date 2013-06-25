@@ -1,9 +1,9 @@
 #!/bin/bash
 
-#
+#---
 # Script to manage xmms2 playlist and collections
 # by means of dmenu.
-#
+#---
 
 ## if you wish to start g2xosd here
 #pidof gx2osd || nohup gx2osd &>/dev/null &

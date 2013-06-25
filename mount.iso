@@ -1,5 +1,10 @@
 #!/bin/sh
 
+#---
+# I don't want to remember the arguments for mounting an iso image, so
+# I made this script to use it instead.
+#---
+
 if [ "$#" -eq "2" ]
 then
         sudo mount $1 $2  -t iso9660 -o ro,loop

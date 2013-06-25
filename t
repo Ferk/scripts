@@ -1,11 +1,12 @@
 #!/bin/sh
-#
+
+#----
 # Wrapper to execute the default terminal
 # (defined by XTERM variable, which I set in my ~/.profile).
 #
 # Also, any args received will be executed in a subshell in the
 # terminal, pausing when the exit code is not standard (error).
-#
+#----
 
 
 XTERM=${XTERM:-"xterm"}

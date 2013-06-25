@@ -1,6 +1,9 @@
 #!/bin/bash
 
+#----
 # A simple script for recording videos with the webcam
+# Requires mencoder 
+#-----
 
 OFILE="test$(date +%s).avi"
 

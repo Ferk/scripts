@@ -1,6 +1,8 @@
 #!/bin/bash
-#
-#
+
+#---
+# Just a simple typical display of colors supported by the terminal
+#---
 
 color16() {
     # prints a color table of 8bg * 8fg * 2 states (regular/bold)

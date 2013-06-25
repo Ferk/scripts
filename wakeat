@@ -1,10 +1,11 @@
 #!/bin/sh
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com
+
+#----
 # Sets the computer in suspension (to memory)
 # and sets it to automatically wake up at the given time.
-#
-# by Fernando Carmona Varo
-#
+#----
 
 
 [ -z "$1" ] && {

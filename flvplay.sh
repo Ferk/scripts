@@ -1,10 +1,9 @@
 #!/bin/sh
-#
+
+#---
 # Plays and offers to save the most recent flash video that is currently loaded
-# 
-# Fernando Carmona Varo
-# Thanks to {r a y AT truedays . org}
-#
+#---
+
 
 stream=$(lsof / | grep Flash | awk '{
 sub("[a-z]+","",$4);
