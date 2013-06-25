@@ -1,7 +1,9 @@
 #!/bin/sh
 #
+#---
 # Increases/decreases/(un)mutes the volume (uses pulseaudio)
-#
+#---
+
 # Fernando Carmona Varo
 #
 

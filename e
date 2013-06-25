@@ -4,7 +4,7 @@
 #---
 # Not really very useful anymore, since emacs already improved
 # emacsclient invocation, but this was my wrapper around emacs.
-# ---
+#---
 
 OPTS='-c -a ""'
 

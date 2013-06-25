@@ -5,7 +5,7 @@
 
 cd "$(dirname "$0")"
 
-{
+{ # This code is showing because github org-mode implementation is flawed
     sed -n '1,/^# BEGIN_DESCRIPTIONS/p' "$0"
 
     for script in *
@@ -17,7 +17,7 @@ cd "$(dirname "$0")"
     done
 
     sed -n '/^# END_DESCRIPTIONS/,/!$/p' "$0"
-}
+} | sponge "$0"
 
 exit
 #+END_COMMENT
@@ -30,10 +30,6 @@ These are just some scripts I use in my machines.
 ** Descriptions
 
 # BEGIN_DESCRIPTIONS
-*** #vol.sh#
-
- Increases/decreases/(un)mutes the volume (uses pulseaudio)
-
 *** Xlaunch
 
  Launches an X.org server in another display with the given program
@@ -165,15 +161,7 @@ These are just some scripts I use in my machines.
 
  Not really very useful anymore, since emacs already improved
  emacsclient invocation, but this was my wrapper around emacs.
- ---
- choose the emacs snapshot version if present
- When executed in a supported terminal, don't use an X window
- # Execute the emacs daemon if it was not running
- if [ ! -e /tmp/emacs*  ]
- then
-     $E --daemon
- fi
-echo "> $EXEC"
+
 *** ffscreencast.sh
 
  Script to record a screencast
@@ -305,6 +293,10 @@ echo "> $EXEC"
 :    pkill turboclick.sh || turboclick.sh
 
  You need xmacro installed.
+
+*** vol.sh
+
+ Increases/decreases/(un)mutes the volume (uses pulseaudio)
 
 *** wakeat
 
