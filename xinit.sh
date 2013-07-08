@@ -1,10 +1,15 @@
 #!/bin/sh
 
+#---
+# This script is called from my .xinitrc at the start of my X.org session,
+# before launching the WM.
+#---
+
 # Only run this script once (checking if some main process is active)
 if pgrep xbindkeys >&-
 then
 	echo "xinit.sh: already running processes"
-    exit
+	return || exit
 else
 	echo "** Running xinit.sh script"
 fi
@@ -48,7 +53,7 @@ setxkbmap -option terminate:ctrl_alt_bksp
 
 ## Set up sound and mixer start values
 hash pulseaudio 2>&- && {
-    start-puleaudio-x11
+    start-pulseaudio-x11
     pactl set-sink-volume 0 0x05000 # 0x10000 == 100%
 } || {
     amixer sset Master 50% on
@@ -72,4 +77,4 @@ syndaemon -t -k -i 2 -d &
 setwallpaper &
 t &
 browser &
-exit
+

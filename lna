@@ -1,9 +1,9 @@
 #!/bin/sh
 
-#
+#---
 # Wrapper for "ln" so that it's straightforward to
 # create symbolic links using absolute paths.
-# 
+#---
 
 # discard args until there's a valid target file
 until [ -e "$1" ]

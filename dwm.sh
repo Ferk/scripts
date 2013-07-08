@@ -1,10 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Fernando Carmona Varo
 
-##
-# Wrapper script around my dwm
-##
+#---
+# Wrapper script around my dwm window manager
+#---
 
 
 BUILDIR="$XDG_CONFIG_HOME/dwm/"
@@ -60,7 +60,7 @@ pgrep "dwm$" >/dev/null && {
 }
 
 # Set a known name to the WM so that some programs don't complain
-if hash wmname &>/dev/null
+if hash wmname >/dev/null 2>&1
 then 
     wmname LG3D
 else 

@@ -1,55 +1,108 @@
 #!/bin/sh
+#
+#
 
-TERM=xterm
+XTERM=${XTERM:-xterm}
 alias dmenu='dmenu -nb "#333" -nf "#ccc" -sb "#111" -sf "#ff0"'
 
-WLANI=$(echo /proc/sys/net/ipv4/conf/w* | sed "s%.*/%%")
-
-# Only root may pass
-[ $USER = root ] || {
-    sudo $0
-    exit
-}
-
-
-hash airmon-ng 2>/dev/null || {
-    cat<<EOF | xmessage -file -
-Aircrack-ng suite not installed.
-You'll also need aircrack-ng-scripts package and a compatible wireless card.
-EOF
-    exit 1
-}
+WLANS=$(echo /sys/class/net/wl* | sed "s%[^ ]*/%%g")
 
 step() {
     cmd=$(dmenu -l 4 -p "$1")
-    [ -z "$cmd" ] || $TERM -e sh -c "$cmd;echo Press any key..;read"
+    [ -z "$cmd" ] || $XTERM -e sh -xc "$cmd;echo Press any key..;read"
+}
+
+msg() {
+    echo "$@" | xmessage -file -
 }
 
 #############
 
-iwlist $WLANI scan | xmessage -file -
+# Only root may pass
+[ $UID = 0 ] || {
+    gksudo $0 "$@"
+    exit
+}
+
+if [ "$WLANS" = "/sys/class/net/wl*" ]; then
+    msg "No wireless interface found"
+    exit 1
+fi
+
+for dep in airmon-ng airodump-ng aircrack-ng dmenu
+do
+    if ! hash "$dep" 2>/dev/null; then
+	msg "The required program '$dep' must be installed"
+	exit 2
+    fi
+done
+
+#############
+
+{
+cat <<EOF
+Wireless interfaces found: ${WLANS}
+Scanning ${WLANS%% *} for available networks..
+----------------------------------------------
+EOF
+for i in $(seq 5); do
+    sudo wpa_cli -i ${WLANS%% *} scan >/dev/null || continue
+    sudo wpa_cli -i ${WLANS%% *} scan_results && break
+done | sed 's#/#\t#g' | column -t -s "	" # tab-separated fields
+cat <<EOF
+----------------------------------------------
+Table of frequencies and channels:
+
+Channel	Frequency (MHz)
+1	2412	
+2	2417	
+3	2422	
+4	2427	
+5	2432	
+6	2437	
+7	2442	
+8	2447	
+9	2452	
+10	2457	
+11	2462
+12	2467	(illegal in USA)
+13	2472	(illegal in USA)
+14	2484    (only legal in Japan)
+EOF
+} | xmessage -file -
+
+
+#gksudo iwlist $WLANI scan | xmessage -file -
 
 cat <<EOF | step '1. Check (and kill) programs that could interfere with the wireless card'
+sudo systemctl stop wicd networkmanager wpa_supplicant; sudo airmon-ng check kill
 sudo /etc/rc.d/wicd stop; sudo /etc/rc.d/networkmanager stop; sudo pkill wpa_; sudo airmon-ng check kill
 sudo airmon-ng check kill
 sudo airmon-ng check
 exit # skip this step
 EOF
 
-cat <<EOF | step '2. Turn card into monitor mode (optional specific channel)'
-sudo airmon-ng stop mon0; sudo airmon-ng start $WLANI
-sudo airmon-ng start $WLANI
-sudo airmon-ng start $WLANI 2
-sudo airmon-ng start $WLANI 6
-exit # skip this step
+{ for iw in $WLANS; do
+    cat <<EOF
+sudo airmon-ng stop mon0; sudo airmon-ng start $iw
+sudo airmon-ng stop mon0; sudo airmon-ng start $iw 2 # (channel 2)
+sudo airmon-ng start $iw
 EOF
+   done
+   echo 'exit # skip this step'
+} | step '2. Start monitor mode (specify channel if wanted)'
 
-cat <<EOF | step '3. Get packets with airodump-ng (keep terminal open)' &
-sudo airodump-ng mon0 -w ./wificrack --ivs --encrypt WEP  # only WEP
-sudo airodump-ng mon0 -w ./wificrackecho /proc/sys/net/ipv4/conf/w* | sed "s%.*/%%"
-sudo airodump-ng mon0 -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
-exit # skip this step
+MONS=$(echo /sys/class/net/mon* | sed "s%[^ ]*/%%g")
+
+{ for mon in $MONS; do
+    cat <<EOF
+sudo airodump-ng $mon -w ./wificrack --ivs --encrypt WEP  # only WEP
+sudo airodump-ng $mon -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
+sudo airodump-ng $mon -w ./wificrack
 EOF
+    done
+    echo 'exit # skip this step'
+} | step '3. Collect packets (must keep the terminal open)' &
 
 # wait for dmenu to finish before we can launch it again
 while pidof dmenu > /dev/null
@@ -58,13 +111,11 @@ done
 
 sleep 3s # also wait for some packets
 
-cat <<EOF | step '4. Use collected packets to crack the encryption'
-aircrack-ng ./wificrack*.ivs -f 100 # WEP increased tries (if low number of IV)
-aircrack-ng ./wificrack*.ivs # WEP
+cat <<EOF | step '4. Use collected packets to crack encryption'
+aircrack-ng ./wificrack*.ivs -l key -f 100 # WEP increased tries (if low number of IV)
+aircrack-ng ./wificrack*.ivs -l key # WEP
 exit
 EOF
-
-
 
 
 

@@ -1,6 +1,12 @@
 #!/bin/bash
 
 
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+
+#---
+# Script for synchronization of SRT subtitle files
+#---
+
 showhelp() {
     prog="${0##*/}"
     cat <<EOF 

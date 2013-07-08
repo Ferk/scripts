@@ -1,11 +1,12 @@
 #!/bin/sh
-#
+
+#----
 # Captures from the camera and changes the brightness of the
 # screen backlight according to the brightness level of the
 # image captured by the cam.
 #
 # Uses ffmpeg, imagemagick, xbacklight and acpi
-#
+#----
 
 # Time for the camera to capture
 TIMECK=0.05

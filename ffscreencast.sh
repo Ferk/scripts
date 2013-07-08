@@ -1,6 +1,8 @@
 #!/bin/bash
 
-## Script to record a screencast
+#---
+# Script to record a screencast
+#---
 
 # give me one moment to prepare myself
 echo "** Screencast recording initiating..."

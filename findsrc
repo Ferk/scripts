@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#---
+# Searches recursivelly the directory for files matching a specific regex
+#---
+
 show_usage() {
 
     cat <<EOF 

@@ -2,10 +2,14 @@
 #
 # @Time-stamp: <2010-12-29 10:33:59 ferk>
 # @Author: Fernando Carmona Varo
+
+#---
+# Script to show notifications on pomodoro timeout, useful to follow the
+# pomodoro technique book about improving productivity, or as a
+# multi-purpose timer (the coundown minutes can be set as arguments).
 #
 # [[Pomodoro Technique][ http://www.pomodorotechnique.com/ ]]
-#
-#
+#---
 
 
 function notificate() {

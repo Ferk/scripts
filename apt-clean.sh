@@ -1,7 +1,9 @@
 #!/bin/sh
-#
 
-
+#---
+# Script for APT package manager based systems, for cleaning it up of
+# installed packages, and clearing cache files.
+#---
 
 if [ $(id -u) -ne 0 ]
 then

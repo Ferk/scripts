@@ -1,5 +1,8 @@
 #!/bin/sh
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com
+
+#---
 # Keeps waiting until there's a lapse of time with prolonged
 # inactivity from user and system, and sets the computer to suspend
 # status.
@@ -13,9 +16,7 @@
 # you can use the command: rtcwake -t <time>
 #
 # Requires pm-utils
-#
-# by Fernando Carmona Varo
-#
+#---
 
 ## Variables
 

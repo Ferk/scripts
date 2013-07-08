@@ -1,10 +1,10 @@
 #!/usr/bin/php
 <?php # -*- php -*- 
-#
-# PHP implementation of jsonpipe
+#---
+# PHP implementation of jsonpipe.
 #
 # Original implementation (in python) here: https://github.com/zacharyvoase/jsonpipe
-#
+#---
 
 #
 # Note that unlike the original implementation

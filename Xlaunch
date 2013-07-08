@@ -2,10 +2,11 @@
 
 # Fernando Carmona Varo
 
+#---
 # Launches an X.org server in another display with the given program
 #
 # If no program is given as argument, choose on dmenu (if available)
-
+#---
 
 APP="$@"
 

@@ -1,7 +1,9 @@
 #!/bin/bash
 
 
-
+#---
+# Script to make bootable usb sticks
+#---
 
 
 

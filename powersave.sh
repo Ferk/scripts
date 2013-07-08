@@ -1,8 +1,8 @@
 #!/bin/sh
 
-##
+#---
 # Activates some options for reducing the power consumption.
-#
+#---
 
 
 

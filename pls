@@ -1,13 +1,11 @@
 #!/bin/sh
-#
+
+# Fernando Carmona Varo <ferkiwi@gmail.com>
+
+#----
 # Tool for listing the top CPU-consuming running processes
 # it accepts a regexp argument to be specific.
-#
-# Fernando Carmona Varo <ferkiwi@gmail.com>
-#
-
-
-
+#----
 
 # Use first argument as regexp to get the processes
 if [ $1 ]; then
@@ -42,7 +40,7 @@ cmd="$cmd | head -10"
     S="\e[33m"
     T="\e[0m"
 }
-echo -e "$cmd\n${H}USER       PID ${S}%CPU${H} %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND${T}"
+printf "$cmd\n${H}USER       PID ${S}%%CPU${H} %%MEM    VSZ   RSS TTY      STAT START   TIME COMMAND${T}\n"
 eval $cmd
 
 

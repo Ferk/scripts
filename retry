@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#---
+# Repeats the execution of the given command until it returns a zero exit code.
+#---
+
 eval $@
 while [ "$?" != "0" ]
 do

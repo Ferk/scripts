@@ -1,5 +1,9 @@
 #!/bin/sh
 
+#---
+# Quick and dirty script to find flv videos from my chromium browser cache.
+#---
+
 cd ~/.cache/chromium/Default/Cache/
 
 VIDEOS=$(file * | grep Video | cut -f 1 -d:)
@@ -10,7 +14,7 @@ do
     mplayer $i > /dev/null 2> /dev/null
     echo "R(emove)?"
     read action
-    if [ r == $action -o R == $action ]
+    if [ r = $action -o R = $action ]
     then
         echo "Borrando \"$i\"..."
         rm $i

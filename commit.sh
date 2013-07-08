@@ -1,13 +1,15 @@
 #!/bin/sh
-# 
+
+#---
 # Commit script for SVN.
-# Automatically adds/removes new/missing files (use svn:ignore for files you
-# don't want to include).
+#
+# It automatically adds/removes new/missing files (use svn:ignore for
+# files you don't want to include).
 #
 # Commits also changes done to the repositories designed as externals.
 #
 # Reuses svn-commit.tmp files left from uncommitted messages.
-#
+#---
 
 
 externals=$(svn propget svn:externals | sed 's/.* //')

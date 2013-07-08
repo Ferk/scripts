@@ -1,5 +1,13 @@
 #!/bin/sh
 
+#----
+# This script is set as my default handler for opening webpages.
+#
+# It's just a wrapper around my browser... I just wanted to keep it synced,
+# and it allows me to check for multiple browsers, so I can keep the same 
+# configuration in different systems with different browsers.
+#---
+
 # Making sure that webcam works
 export LD_PRELOAD=/usr/lib/libv4l/v4l1compat.so
 

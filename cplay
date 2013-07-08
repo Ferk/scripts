@@ -1,21 +1,25 @@
 #!/bin/sh
+
+# Fernando Carmona Varo <ferkiwi@gmail.com
+
+#----
+# Script for controlling cmus music player
 #
-# Script to add music/playlists to cmus
-# if no files are given it will toggle playback
-# if no cmus is running, it will open it on a terminal
-#
+# + If no cmus is running, it will open it on a terminal
+# + If run without arguments, it will toggle playback
+# + If run with a playlist as argument, it will be loaded
+# + If run with other files as argument, they will be added to current playlist
+# 
 # Other arguments:
-# --load-pl   Interactivelly loads a playlist using dmenu,
-#             chosen from $PLDIR directory.
+#
+# --load-pl   Show an Interactive dmenu to load a playlist
+#             from the directory set in the CPLAYDIR variable.
 #
 # --save-pl   Asks for a name and saves the playlist in the
 #             playlist directory.
-#
-#
-# by Fernando Carmona Varo
-#
+#----
 
-PLDIR="$HOME/.cmus/pls/"
+CPLAYDIR=${CPLAYDIR:-"$HOME/.cmus/pls/"}
 
 
 if ! pgrep "^cmus$" >/dev/null
@@ -31,7 +35,7 @@ then
 	    cmus-remote -c -P "$1"
 	    ;;
 	--load-pl)
-	    cd $PLDIR
+	    cd $CPLAYDIR
 	    cplay "$(find -iname "*.pl" | dmenu || exit)"
 	    ;;
 	--save-pl)

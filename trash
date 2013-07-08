@@ -1,8 +1,11 @@
 #!/bin/sh
 #
-# Move files to the Trash
+
+#---
+# Move files to the (XDG) Trash
 # Without arguments, ask for Trash to be emptied
-#
+#----
+
 # Fernando Carmona Varo
 #
 

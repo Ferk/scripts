@@ -1,4 +1,32 @@
+#!/bin/sh
 # -*- org -*-
+
+#+BEGIN_COMMENT
+
+# This README.org is actually a script itself.
+# When it's run with "sh README.org" it will autogenerate
+# the documentation from the scripts that have set comments
+# between delimiting "#---" comments.
+
+cd "$(dirname "$0")"
+
+{ # This code is showing because github org-mode implementation is flawed #
+    sed -n '1,/^# BEGIN_DESCRIPTIONS/p' "$0"
+
+    for script in *
+    do
+        [ -x "$script" -a -f "$script" ] || continue
+        grep -q '^#--' $script || continue
+        echo "*** $script"
+        sed -n '/^#--*/,/^#--*/ s/^#-*//p' $script
+    done
+
+    sed -n '/^# END_DESCRIPTIONS/,/!$/p' "$0"
+} | sponge "$0"
+
+exit
+#+END_COMMENT
+
 
 * Collection of scripts
 
@@ -6,198 +34,288 @@ These are just some scripts I use in my machines.
 
 ** Descriptions
 
-*** alarm
-A simple alarm script, it plays a file with mplayer.
-
-It forces you to enter a command in the terminal for setting the alarm off..
-it usually helps me waking up.
-
-*** autoscroll.sh 
-Slowly scrolls down with the mouse automatically, so you can read a webpage,
-a book, or whatever you want to read on your PC.
-Useful when you have your hands busy when eating or doing something.
-
-You can activate/deactivate it by binding a key shortcut to..
-:    pkill autoscroll.sh || autoscroll.sh
-
-You need xmacro installed.
-
-*** turboclick.sh
-Performs a lot of clicks pretty fast in an endless loop. It can drive you crazy
-if you execute it unprepared. I just made it for fun, and beating those silly flash
-games about "how fast can you click?"
-
-You can activate/deactivate it by binding a key shortcut to..
-:    pkill turboclick.sh || turboclick.sh
-
-You need xmacro installed.
-
-*** browser
-This script is set as my default handler for opening webpages.
-It's just a wrapper around my browser... I just wanted to keep it synced,
-and it allows me to check for multiple browsers, so I can keep the same 
-configuration in different systems with different browsers.
-
-*** camrecord
-A simple script for recording videos with the webcam
-Requires mencoder 
-
-*** camplay
-A simple script for displaying the webcam (good to use when on lack of a mirror :P)
-Requires mplayer 
-
-*** cplay
-Simple script for controlling cmus music player.
-It can save and load multiple playlists.
-
-*** wakeup
-Sets the computer in suspension (to memory) and sets it to automatically wake up at the given time.
-
-*** dwm.sh
-Wrapper script around my dwm window manager instalation
-
-*** e
-Not really very useful anymore, since emacs already improved emacsclient invocation,
-but this was my wrapper around emacs.
-
-*** ffscreencast.sh
-Uses ffmpeg to record a screencast
-
-*** imgupload.py
-Uploads a image to imgurl
-
-*** makegrubusb.sh
-Script for making bootable usb sticks
-
-*** mount.iso
-I don't want to remember the arguments for mounting an iso image, so I
-made this script to use it instead.
-
-*** powersave.sh
-Activates some options for reducing the power consumption.
-
-*** setwallpaper
-Sets a random wallpaper from my collection of wallpapers
-
-*** statck
-This script checks for temperature and battery and displays a notification
-(using notify-send) if the limits are too high.
-
-It can either execute a single time, or be run as a daemon (statck -d) that
-will re-run the check each minute.
-
-It has also an option to show the status as a single line (statck -1) which
-I use it for displaying it at dwm status line.
-
-*** thumb-extract
-Extracts the image thumbnails stored in the "thumb.db" files left out by windows.
-
-*** trash
-    Script to manage the (XDG) Trash.
-    It can empty it; move files to it.
-*** tree.sh
-Shows a list of files/directories and their size (du -akx) and processes it
-to a human readable tree shape.
-
-*** vol.sh
-Increases/decreases/(un)mutes the volume (uses pulseaudio)
-
-*** xinit.sh
-This script is called from my .xinitrc at the start of my X.org session, before launching the WM.
-
+# BEGIN_DESCRIPTIONS
 *** Xlaunch
-Launches an X.org server in another display with the given program.
-If no program is given as argument, a terminal window will be used instead.
 
-*** dmenu_run
-Modificacion of dmenu_run from suckless. It uses a history file to
-store the most recent commands introduced and display them the first
-ones on the list.
+ Launches an X.org server in another display with the given program
 
-Requires dmenu (and stest, which is in the same package)
+ If no program is given as argument, choose on dmenu (if available)
 
-*** dxmms2
-Script to manage xmms2 playlist and collections by means of dmenu.
+*** alarm
 
-*** noise
-Generates background whitenoise.
+ A simple alarm script, it plays a file with mplayer.
 
-Requires sox
+ It forces you to enter "alarm off" in the terminal for setting the
+ alarm off. The typing should make your brain react and wake you
+ up... well.. in theory
 
-*** idlescript
-Keeps waiting until there's a lapse of time with prolonged inactivity
-from user and system, and then sets the computer to suspend status.
-
-Requires pm-utils
-
-*** pomodoro
-Script to show notifications on pomodoro timeout, useful to follow the
-pomodoro technique book about improving productivity, or as a multi-purpose timer (the coundown minutes can be set as arguments).
-
-*** retry.sh
-Repeats the execution of the given command until it returns a zero exit code.
-
-*** flvget.sh
-Quick and dirty script to find flv videos from my chromium browser cache.
-
-*** flvplay.sh
-Plays and offers to save the most recent flash video that is currently loaded
-
-*** lna
-Wrapper for "ln" so that it's straightforward to create symbolic links using absolute paths.
-
-*** checklight.sh
-Captures from the camera and changes the brightness of the screen backlight according to the brightness level of the image captured by the cam.
-
-Uses ffmpeg, imagemagick and acpi
-
-*** t
-Wrapper to execute the default terminal (defined by XTERM variable, which I set in my ~/.profile).
-
-Also, any args received will be executed in a subshell in the
-terminal, if the command exits with an error the terminal will pause before exiting.
-
-*** ptop
-Uses pgrep regular expressions to open top with the processes that match them.
-
-*** pls
-Tool for listing the top CPU-consuming running processes
-it accepts a regexp argument to be specific.
-*** arch_reinstall.sh
-Dirty script I use for doing some rutine setup tasks when installing
-and configuring a new archlinux install.
-
-*** arch_updatemirrors.sh
-Script to download the full list of arch mirrors, test them and select the fastest ones.
-
-*** multihead
-Script to set a multi monitor setup. Uses xrandr
-
-*** xumount
-Script to umount removable devices from X.
-It's intended to be used in combination with skvm.
-
-*** subsync.sh
-Script for synchronization of SRT subtitle files
-
-*** crypt.sh
-Wrapper around gpg to encrypt/decrypt files and directories.
-It will also (de)compress them as tar.xz
+ I use cron to set up the time(s) when the script will be triggered.
+ you can also use the "at" command to set temporal alarms.
 
 *** apt-clean.sh
-Script for APT package manager based systems, for cleaning it up of installed packages, and clearing cache files.
+
+ Script for APT package manager based systems, for cleaning it up of
+ installed packages, and clearing cache files.
+
+*** arch_reinstall.sh
+
+ Dirty script I use for doing some rutine setup tasks when
+ installing and configuring a new archlinux install.
+
+ Note: I still didn't use it much, probably needs some love
+
+*** arch_updatemirrors.sh
+
+ Script to download the full list of arch mirrors,
+ test them and select the fastest ones.
+
+*** autoscroll.sh
+
+ Slowly scrolls down with the mouse automatically, so you can read a webpage,
+ a book, or whatever you want to read on your PC.
+ Useful when you have your hands busy when eating or doing something.
+
+ You can activate/deactivate it by binding a key shortcut to..
+:    pkill autoscroll.sh || autoscroll.sh
+
+ You need xmacro installed.
+
+*** browser
+
+ This script is set as my default handler for opening webpages.
+
+ It's just a wrapper around my browser... I just wanted to keep it synced,
+ and it allows me to check for multiple browsers, so I can keep the same 
+ configuration in different systems with different browsers.
+
+*** camplay
+
+ A simple script for displaying the webcam
+ (good to use when on lack of a mirror :P)
+
+ Requires mplayer 
+
+*** camrecord
+
+ A simple script for recording videos with the webcam
+ Requires mencoder 
+
+*** checklight.sh
+
+ Captures from the camera and changes the brightness of the
+ screen backlight according to the brightness level of the
+ image captured by the cam.
+
+ Uses ffmpeg, imagemagick, xbacklight and acpi
+
+*** colortable.sh
+
+ Just a simple typical display of colors supported by the terminal
+
+*** commit.sh
+
+ Commit script for SVN.
+
+ It automatically adds/removes new/missing files (use svn:ignore for
+ files you don't want to include).
+
+ Commits also changes done to the repositories designed as externals.
+
+ Reuses svn-commit.tmp files left from uncommitted messages.
+
+*** cplay
+
+ Script for controlling cmus music player
+
+ + If no cmus is running, it will open it on a terminal
+ + If run without arguments, it will toggle playback
+ + If run with a playlist as argument, it will be loaded
+ + If run with other files as argument, they will be added to current playlist
+ 
+ Other arguments:
+
+ --load-pl   Show an Interactive dmenu to load a playlist
+             from the directory set in the CPLAYDIR variable.
+
+ --save-pl   Asks for a name and saves the playlist in the
+             playlist directory.
+
+*** crypt.sh
+
+ Wrapper around gpg to encrypt/decrypt a file or directory
+ it will also (de)compress them
+
+*** dmenu_run
+
+ Modified dmenu_run from suckless, that uses an history file to store
+ the most recent commands introduced and display them the first ones
+ on the list.
+
+ Requires dmenu (and stest, which is in the same package)
+
+*** dwm.sh
+
+ Wrapper script around my dwm window manager
+
+*** dxmms2
+
+ Script to manage xmms2 playlist and collections
+ by means of dmenu.
+
+*** e
+
+ Not really very useful anymore, since emacs already improved
+ emacsclient invocation, but this was my wrapper around emacs.
+
+*** ffscreencast.sh
+
+ Script to record a screencast
 
 *** findsrc
-Searches recursivelly the directory for files matching a specific regex
+
+ Searches recursivelly the directory for files matching a specific regex
+
+*** flvget.sh
+
+ Quick and dirty script to find flv videos from my chromium browser cache.
+
+*** flvplay.sh
+
+ Plays and offers to save the most recent flash video that is currently loaded
+
+*** idlescript.sh
+
+ Keeps waiting until there's a lapse of time with prolonged
+ inactivity from user and system, and sets the computer to suspend
+ status.
+
+ I wrote this script because most other suspend-on-idle methods don't
+ take HD activity into account, which is required when you let the
+ computer alone working on some operation, and want it to
+ automatically suspend when the operation is finished.
+
+ If you want the computer to wake up automatically at some given time
+ you can use the command: rtcwake -t <time>
+
+ Requires pm-utils
 
 *** jsonpipe
-Simple implementation of jsonpipe (https://github.com/zacharyvoase/jsonpipe) in PHP.
-*** commit.sh
-Commit script for SVN.
-Automatically adds/removes new/missing files (use svn:ignore for files you don't want to include).
-Commits also changes to the repositories designed as externals.
-Reuses svn-commit.tmp files left from uncommitted messages.
-**  WTFPL License (appliable to every script)
+
+ PHP implementation of jsonpipe.
+
+ Original implementation (in python) here: https://github.com/zacharyvoase/jsonpipe
+
+*** lna
+
+ Wrapper for "ln" so that it's straightforward to
+ create symbolic links using absolute paths.
+
+*** makegrubusb.sh
+
+ Script to make bootable usb sticks
+
+*** mount.iso
+
+ I don't want to remember the arguments for mounting an iso image, so
+ I made this script to use it instead.
+
+*** noise
+
+ Generates background whitenoise
+
+ Requires sox
+
+*** pls
+
+ Tool for listing the top CPU-consuming running processes
+ it accepts a regexp argument to be specific.
+
+*** pomodoro
+
+ Script to show notifications on pomodoro timeout, useful to follow the
+ pomodoro technique book about improving productivity, or as a
+ multi-purpose timer (the coundown minutes can be set as arguments).
+
+ [[Pomodoro Technique][ http://www.pomodorotechnique.com/ ]]
+
+*** powersave.sh
+
+ Activates some options for reducing the power consumption.
+
+*** ptop
+
+ Uses pgrep regular expressions to open top
+ with the processes that match them
+
+*** retry
+
+ Repeats the execution of the given command until it returns a zero exit code.
+
+*** setwallpaper
+
+ Sets a random wallpaper from my collection of wallpapers
+
+*** statck
+
+ This script checks for temperature and battery and displays a notification
+ (using notify-send) if the limits are too high.
+
+ It can either execute a single time, or be run as a daemon (statck -d) that
+ will re-run the check each minute.
+
+ It has also an option to show the status as a single line (statck -1) which
+ can be used for displaying it at applications status line.
+
+*** subsync.sh
+
+ Script for synchronization of SRT subtitle files
+
+*** t
+
+ Wrapper to execute the default terminal
+ (defined by XTERM variable, which I set in my ~/.profile).
+
+ Also, any args received will be executed in a subshell in the
+ terminal, pausing when the exit code is not standard (error).
+
+*** thumb-extract
+
+ Extracts the image thumbnails stored in the "thumb.db" files left out by
+ windows installations.
+
+*** trash
+
+ Move files to the (XDG) Trash
+ Without arguments, ask for Trash to be emptied
+
+*** turboclick.sh
+
+ Performs a lot of clicks pretty fast in an endless loop. It can drive you crazy
+ if you execute it unprepared. I just made it for fun, and beating those silly flash
+ games about "how fast can you click?"
+
+ You can activate/deactivate it by binding a key shortcut to..
+:    pkill turboclick.sh || turboclick.sh
+
+ You need xmacro installed.
+
+*** vol.sh
+
+ Increases/decreases/(un)mutes the volume (uses pulseaudio)
+
+*** wakeat
+
+ Sets the computer in suspension (to memory)
+ and sets it to automatically wake up at the given time.
+
+*** xinit.sh
+
+ This script is called from my .xinitrc at the start of my X.org session,
+ before launching the WM.
+
+# END_DESCRIPTIONS
+
+*  WTFPL License (appliable to every script)
 
 Copyright (C) 2012 Fernando Carmona Varo
 
