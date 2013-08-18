@@ -25,9 +25,8 @@ fi
 cmd="$cmd | tail -n +2"
 
 # cut the lines that are too long
-[ $COLUMNS ] || COLUMNS=100
+[ $COLUMNS ] || COLUMNS=$(tput cols)
 cmd="$cmd | cut -c -$COLUMNS"
-
 # sort them according to the 3rd field (CPU)
 cmd="$cmd | sort -rk3"
 
