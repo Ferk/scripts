@@ -11,6 +11,13 @@ walldir=~/Pictures/wallpapers
 
 wallp=$(find "$walldir" -iregex ".*\(jpg\|png\)" | shuf -n 1)
 
+if ! [ -f "$wallp" ]
+then
+    echo "No wallpaper could be found in $walldir"
+    exit 2
+fi
+
+
 # Darken a bit the image so that it's not very intrusive and blends in the background
 convert "$wallp" -brightness-contrast -50x-50 "$HOME/Pictures/wallpapers/.wallpaper"
 wallp="$HOME/Pictures/wallpapers/.wallpaper"
