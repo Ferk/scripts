@@ -19,12 +19,6 @@ then
     exit
 fi
 
-if ! pulseaudio --check &>/dev/null
-then
-    echo "pulseaudio not running"
-    exit
-fi
-
 if [ "$1" = "mute" ] # toggle mute
 then
     pactl set-sink-mute @DEFAULT_SINK@ toggle
