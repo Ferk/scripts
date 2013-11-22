@@ -7,8 +7,8 @@
 # Fernando Carmona Varo
 #
 
-# pulseaudio maximum volume multiplier
 # Volume 65536 (0x10000) is normal max, greater values will amplify the audio signal (with clipping).
+# A multiplier can be specified here
 multiplier=3
 
 percent=$1
@@ -47,14 +47,15 @@ then
     then
 	echo "Volume can't be set lower"
 	set_vol=$((0x0))
-    else
-	if [ $((set_vol)) -gt $((max)) ]
-	then
-            echo "Volume can't be set higher"; exit
-            set_vol=$((max))
-	fi
+    elif [ $((set_vol)) -gt $((max)) ]
+    then
+        echo "Volume can't be set higher"
+        set_vol=$((max))
     fi
-    display_vol=$((set_vol * 300/max))
+
+    [ "$set_vol" = "$current_vol" ] && exit
+    
+    display_vol=$((set_vol * multiplier * 100/max))
 
     pactl set-sink-volume @DEFAULT_SINK@ -- $set_vol
 
@@ -62,7 +63,7 @@ then
     hash osd_cat 2>$- && {
 	pkill osd_cat
 	osd_cat -O 3 -o 12 -c white -A center -d 1 -f "-*-*-*-*-*-*-*-*-*-*-*-*-*" \
-	    -b percentage -P $percent -T $(bc <<<"$set_vol/$((0x100))")
+	    -b percentage -P $((set_vol * 100/max)) -T $((set_vol*100/0x10000))
     } &
 
 else
@@ -75,3 +76,4 @@ fi
 xsetroot -name "volume: $display_vol" && sleep 1 && dwm.sh update &
 
 echo $display_vol
+
