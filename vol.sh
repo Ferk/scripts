@@ -9,13 +9,19 @@
 
 # pulseaudio maximum volume multiplier
 # Volume 65536 (0x10000) is normal max, greater values will amplify the audio signal (with clipping).
-multiplier=2
+multiplier=3
 
 percent=$1
 
 if [ -z $percent ]
 then
     echo "usage: vol.sh <+XX|-XX|mute>"
+    exit
+fi
+
+if ! pulseaudio --check &>/dev/null
+then
+    echo "pulseaudio not running"
     exit
 fi
 
@@ -52,12 +58,11 @@ then
 
     pactl set-sink-volume @DEFAULT_SINK@ -- $set_vol
 
-
     # notify with osd if available
     hash osd_cat 2>$- && {
 	pkill osd_cat
 	osd_cat -O 3 -o 12 -c white -A center -d 1 -f "-*-*-*-*-*-*-*-*-*-*-*-*-*" \
-	    -b percentage -P $((set_vol * 100/max))
+	    -b percentage -P $percent -T $(bc <<<"$set_vol/$((0x100))")
     } &
 
 else
