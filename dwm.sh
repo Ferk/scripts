@@ -73,7 +73,7 @@ do
     # Compile dwm if newer config is available
     if [ "$BUILDIR/config.h" -nt "$BUILDIR/dwm"  ]
     then
-	( cd "$BUILDIR" && make )
+	( cd "$BUILDIR" && make ) > "$BUILDIR/build.log" 2>&1
     fi
 
     # Run custom dwm if it exists (even if compilation failed)    
@@ -82,7 +82,7 @@ do
 	"$BUILDIR/dwm"
     else 
 	dwm
-    fi
+    fi > "$BUILDIR/run.log" 2>&1
 done
 
 

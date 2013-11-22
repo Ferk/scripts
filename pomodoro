@@ -14,7 +14,8 @@
 
 function notificate() {
     beep -f 1000 -r 2 -n -r 5 -l 10 -n &
-    notify-send -u critical -i appointment -t 2000 "$@"
+    notify-send -u critical -i appointment -t 2000 "$@" || \
+    echo "tell app \"System Events\" to display dialog \"$@\"" | osascript
     echo "$@"
 }
 
