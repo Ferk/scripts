@@ -37,7 +37,13 @@ current_vol=$(pacmd dump | awk '/set-sink-volume/ { print $3; exit }')
 if [ "$current_vol" ]
 then
 
-    max=$((multiplier * 0x10000))
+    # Don't apply multiplier when volume is less than 100%
+    if [ $((current_vol*100/0x10000)) -lt 100 ]
+    then
+	max=$((0x10000))
+    else
+	max=$((multiplier * 0x10000))
+    fi
 
     set_vol=$((current_vol + (percent * max/100)))
     #set_vol=$((current_vol + (percent * 100)))
