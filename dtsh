@@ -1,0 +1,97 @@
+#!/bin/sh
+
+#---
+# Wrapper around the 'dtach' utility to manage multiple sessions
+# stored in the same directory, creating/switching to them easily.
+#---
+
+DIR=$HOME/.config/dtsh
+
+DEFAULT_NAME=s
+DEFAULT_CMD=$SHELL
+
+DTACH_ESCAPE='^\'
+DTACH_OPTS="-e $DTACH_ESCAPE -z"
+
+usage() {
+    cat <<EOF
+  Usage: ${0##*/} <session name>
+         ${0##*/} -c [<session name>] [<command>]
+  Open sessions:
+EOF
+    get_sessions
+
+    if [ "$DTSH_SESSION" ]
+    then
+	echo "  Currently attached: $(basename $DTSH_SESSION)"
+    fi
+}
+
+# print list of current sessions
+get_sessions() {
+    for s in "$DIR"/*
+    do
+	[ -S "$s" ] || continue
+	printf " $(basename $s)\n"	
+    done 
+}
+
+# Find and print the filename for the new session
+# arguments will be used as name
+new_session_name() {
+    local name=${*:-$DEFAULT_NAME}
+    local fname;
+    while true
+    do
+	fname="${DIR}/${name}${i}"
+	[ -S "$fname" ] || break
+	i=$((i+1))
+    done
+    printf "$fname"
+}
+
+# Shell commands to run after a new deattached session
+# is created.
+# 
+new_session_command() {
+    cat <<EOF
+ printf "This is a dtsh session: '$(basename "$DTSH_SESSION")'\n"
+ printf "To detach it from the terminal press: %s\n" "${DTACH_ESCAPE/\\/\\\\}"
+ exec ${@:-$DEFAULT_CMD}
+EOF
+}
+
+if ! [ "$1" ]
+then
+    usage
+    exit 1
+
+elif [ "$1" = "-c" ]
+then
+    shift
+    DTSH_SESSION=$(new_session_name $1)
+    shift
+    DTSH_CMD=$(new_session_command $@)
+    mkdir -p "$DIR"
+    export DTSH_SESSION
+    exec dtach -c "$DTSH_SESSION" $DTACH_OPTS sh -c "$DTSH_CMD"
+
+else
+    s="$DIR/$*"
+    if [ "$DTSH_SESSION" = "$s" ]
+    then
+	echo "err: the session is already attached to the current terminal"
+	exit 2
+	
+    elif ! [ -S "$s" ]
+    then
+	echo "The given session doesn't exist: '$*'"
+	echo "Use the -c flag to create it, or pick an existing session:"
+	get_sessions	
+	exit 2
+
+    else
+	exec dtach -a "$s" $DTACH_OPTS
+    fi
+fi
+
