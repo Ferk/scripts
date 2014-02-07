@@ -7,22 +7,25 @@
 show_usage() {
 
     cat <<EOF 
-  usage: ${0##*/} [directory] <regex>
+  usage: ${0##*/} <pattern> [files or directories]
 EOF
     exit
 }
 
-if [ "$2" ]
-then
-    DIR="$1"
-    REGEX="$2"
-else
-    DIR="."
+custom_ack() {
+    [ "$1" ] || show_usage
+
     REGEX="$1"
-fi
-if [ -z "$REGEX"  ] || [ "$3" ]
+    shift
+
+    grep "$@" --color=always --exclude=.svn --exclude=node_modules -nHre "$REGEX" | less -R -F -X
+}
+
+if hash ack 2>/dev/null
 then
-    show_usage
+    exec ack "$@"
+else
+    custom_ack "$@"
 fi
 
-grep "$DIR" --color=always --exclude=.svn --exclude=node_modules -nHre "$REGEX" | less -R -F -X
+
