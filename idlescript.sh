@@ -15,7 +15,7 @@
 # If you want the computer to wake up automatically at some given time
 # you can use the command: rtcwake -t <time>
 #
-# Requires pm-utils
+# Requires pm-utils and xprintidle
 #---
 
 ## Variables
@@ -33,24 +33,26 @@ printf " Timeout:%7d.000 s\n HDLimit:%10d ms\n"  $TIMEOUT $IOLIMIT
 
 # zeroing these means the first record would be higher, but that doesn't matter
 HD0=0
-KB0=0
 while true
 do
     sleep $TIMEOUT
 
     # weighted milliseconds the Disks spent doing I/Os
     HD1=$(cat /sys/block/*/stat | awk '{ a += $11 } END {print a}')
-    # keyboard interruptions
-    KB1=$(cat /proc/interrupts | awk '/i8042/ {i += $2+$3}; END { print i }')
     
-    printf "[$(date +'%F %H:%M')] Activity:  HD:%7d Keyboard:%6d\n" $(($HD1-$HD0)) $((KB1-KB0))
+    printf "[$(date +'%F %H:%M')] Activity:  HD:%7d\n" $(($HD1-$HD0)) $((KB1-KB0))
 
     # Actions to activate when the Hard Disk is inactive and no user input
-    [ $(($HD1-$HD0)) -lt $IOLIMIT ]  && [ $((KB1-KB0)) = 0 ] && { 
+    [ $(($HD1-$HD0)) -lt $IOLIMIT ]  && [ "$(xprintidle)" -ge $(("$TIMEOUT"*1000)) ] && { 
 	echo "Lower than the $IOLIMIT limit. Suspending!!"
-        sudo pm-suspend
+	
+	if [ "$DISPLAY" ]
+	then
+	    xmessage "Computer has been idle, will go into sleep mode automatically" -
+	else
+            systemctl suspend
+	fi
     }
 
     HD0=$HD1
-    KB0=$KB1
 done
