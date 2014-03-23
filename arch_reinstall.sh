@@ -129,7 +129,6 @@ G="$G users"     #    Standard users group.
 G="$G uucp"      # /dev/ttyS[0-9] /dev/tts/[0-9]  USB devices, RS232 and serial ports.
 G="$G video"     # /dev/fb/0, /dev/misc/agpgart   for video capture devices, DRI/3D hw acceleration.
 G="$G wheel"     # to use sudo (setup with visudo), Also affected by PAM
-
 # non-default Groups
 G="$G ntp"              #
 G="$G policykit"        #
@@ -138,6 +137,8 @@ G="$G clamav"           # /var/lib/clamav/*, /var/log/clamav/*
 G="$G networkmanager"   #  to connect wirelessly with Networkmanager.
 G="$G vboxusers"        # /dev/vboxdrv to use Virtualbox software.
 G="$G vmware"           #  to use VMware software.
+G="$G games"            # Permission to write to /var/games
+G="$G systemd-journal"
 
 for i in $G
 do
@@ -202,7 +203,7 @@ i cscope ctags
 #i tct # http://www.linux-mag.com/id/1889/
 i awk ed lsof lsw ncdu lesspipe dtach dvtm moreutils xprintidle mlocate
 i stderred-git #rmshit-git #screenfo
-i atool unrar zip unzip unarj p7zip xz
+i atool unrar zip unzip unarj p7zip xz bzip2
 i minicom
 i pm-utils
 
@@ -213,7 +214,7 @@ i aircrack-ng
 
 ## Internet
 i firefox chromium netsurf elinks
-i chromium-libpdf-stable chromium-pepper-flash
+i chromium-libpdf-stable chromium-pepper-flash-stable
 i google-talkplugin flashplugin
 i rtorrent #transmission-gtk tucan-hg
 i nmap gnu-netcat aircrack-ng 
@@ -247,7 +248,7 @@ i pidgin finch irssi
 
 ## Games and other silly stuff
 i fortune-mod cowsay bsd-games
-i nethack stone-soup hydraslayer tintin moon-buggy bastet enigma
+i nethack stone-soup hydraslayer tintin moon-buggy bastet enigma curseofwar cavez-of-fear cataclysm-dda
 i puzzles pychess
 i cheese
 i fceux zsnes-netplay
