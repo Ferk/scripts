@@ -1,6 +1,6 @@
 #!/bin/sh
 #--------
-# Convenience script to use with the [[dtach tool][https://github.com/bogner/dtach]].
+# Convenience script to use with the [[https://github.com/bogner/dtach][dtach tool]].
 #
 # It will run in a detached session whatever arguments are given,
 # assigning automatically a pertinent socket.
