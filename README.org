@@ -1,4 +1,3 @@
-#!/bin/sh
 # -*- org -*-
 
 #+BEGIN_COMMENT
@@ -152,6 +151,26 @@ These are just some scripts I use in my machines.
  on the list.
 
  Requires dmenu (and stest, which is in the same package)
+
+*** dtach_run
+
+ Convenience script to use with the [[dtach tool][https://github.com/bogner/dtach]].
+
+ It will run in a detached session whatever arguments are given,
+ assigning automatically a pertinent socket.
+
+ If it's called from a symlink starting with "d", it will use
+ the name of the symlink as the command to call (for example,
+ symlink "dbash" will start a detached bash session).
+
+ Also, for non-US keyboard friendliness, it will use Control+Q 
+ as default escape shortcut to dettach the session (overriden by 
+ DTACH_ESCAPE)
+
+*** dtsh
+
+ Wrapper around the 'dtach' utility to manage multiple sessions
+ stored in the same directory, creating/switching to them easily.
 
 *** dwm.sh
 
@@ -307,6 +326,13 @@ These are just some scripts I use in my machines.
 
  Sets the computer in suspension (to memory)
  and sets it to automatically wake up at the given time.
+
+*** when
+
+ Retries the given command until "success".
+
+ Success is determined when the command either returned with exit(0) status
+ or is still running after the given timeout.
 
 *** xinit.sh
 
