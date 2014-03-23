@@ -154,7 +154,7 @@ These are just some scripts I use in my machines.
 
 *** dtach_run
 
- Convenience script to use with the [[dtach tool][https://github.com/bogner/dtach]].
+ Convenience script to use with the [[https://github.com/bogner/dtach][dtach tool]].
 
  It will run in a detached session whatever arguments are given,
  assigning automatically a pertinent socket.
@@ -216,7 +216,7 @@ These are just some scripts I use in my machines.
  If you want the computer to wake up automatically at some given time
  you can use the command: rtcwake -t <time>
 
- Requires pm-utils
+ Requires pm-utils and xprintidle
 
 *** jsonpipe
 
