@@ -70,17 +70,18 @@ fi
 # Run dwm in loop so it can restart (to close session pkill dwm.sh)
 while true
 do
-    # Compile dwm if newer config is available
     if [ "$BUILDIR/config.h" -nt "$BUILDIR/dwm"  ]
     then
-	( cd "$BUILDIR" && make ) > "$BUILDIR/build.log" 2>&1
+	echo 'New dwm config.h found! compiling...'
+	( cd "$BUILDIR" && make ) 2>&1 | tee "$BUILDIR/build.log"
     fi
 
     # Run custom dwm if it exists (even if compilation failed)    
     if [ -e "$BUILDIR/dwm"  ]
     then
+	echo "Starting custom dwm from: $BUILDIR"
 	"$BUILDIR/dwm"
-    else 
+    else
 	dwm
     fi > "$BUILDIR/run.log" 2>&1
 done
