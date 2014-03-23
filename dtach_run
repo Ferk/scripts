@@ -1,0 +1,30 @@
+#!/bin/sh
+#--------
+# Convenience script to use with the [[dtach tool][https://github.com/bogner/dtach]].
+#
+# It will run in a detached session whatever arguments are given,
+# assigning automatically a pertinent socket.
+#
+# If it's called from a symlink starting with "d", it will use
+# the name of the symlink as the command to call (for example,
+# symlink "dbash" will start a detached bash session).
+#
+# Also, for non-US keyboard friendliness, it will use Control+Q 
+# as default escape shortcut to dettach the session (overriden by 
+# DTACH_ESCAPE)
+#--------
+
+name=$(basename "$0")
+
+if [ "$name" = "dtach_run" ]
+then
+	name=$1
+else
+	bin=${name#d}
+fi
+
+exec dtach -A "${TMPDIR:-/tmp}/$name.session" \
+	 -e ${DTACH_ESCAPE:-^q} \
+	 -r ${DTACH_REDRAW:-winch} \
+	  $bin "$@"
+
