@@ -165,6 +165,7 @@ msg "Installing packages"
 ## basic
 i base base-devel linux-tools xorg xorg-apps xorg-fonts
 i net-tools wpa_supplicant ethtool rfkill
+i bash-completion
 
 ## Language Tools
 i dictd goldendict espeak google-translate
