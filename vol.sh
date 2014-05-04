@@ -23,10 +23,10 @@ if [ "$1" = "mute" ] # toggle mute
 then
     pactl set-sink-mute @DEFAULT_SINK@ toggle
     exit
-fi
+ fi
 
-
-current_vol=$(pacmd dump | awk '/set-sink-volume/ { print $3; exit }')
+default_sink=$(pacmd dump | sed -n 's/set-default-sink \(.*\)/\1/p')
+current_vol=$(pacmd dump | sed -n "s/set-sink-volume $default_sink \(.*\)/\1/p")
 
 if [ "$current_vol" ]
 then
