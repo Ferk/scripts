@@ -21,19 +21,27 @@ finish() {
     fi
 }
 
-PACMAN=$({ which yaourt || which pacman;} 2>/dev/null)
-[ -z "$PACMAN" ] && {
-    echo "Can't find pacman package installer. Is your system Archlinux?"
-    exit 1
-}
 
-if [ $PACMAN = "pacman" ]
+if [ "$PACMAN_CMD" ]
 then
-    wget https://raw.github.com/keenerd/packer/master/packer && {
-    pacman -S jshon fakeroot
-    chmod +x /usr/bin/packer
-    PACMAN=/usr/bin/packer
-  }
+    # Use whatever is specified as PACMAN_CMD without any further check
+    PACMAN=$PACMAN_CMD
+else
+    PACMAN=$({ which yaourt || which packer || which pacman;} 2>/dev/null)
+    [ -z "$PACMAN" ] && {
+	echo "Can't find pacman package installer. Is your system Archlinux?"
+	exit 1
+    }
+    
+    if [ $PACMAN = "pacman" ]
+    then
+	echo "no AUR installer found, downloading packer"
+	wget https://raw.github.com/keenerd/packer/master/packer && {
+	    pacman -S jshon fakeroot
+	    chmod +x /usr/bin/packer
+	    PACMAN=/usr/bin/packer
+	}
+    fi
 fi
 
 ######
@@ -44,24 +52,36 @@ msg() {
 
 confirm() {
 	echo "$@"
-	read edit -p "Do you want to edit that? [yN]"
+	echo  "Do you want to edit that? [yN]"
+	read edit
 	[ "$edit" = "N" ] && return
 }
 
 i() {
-    INSTALL_LIST="$INSTALL_LIST $@"
+    for pkg in $@
+    do
+	if pacman -Si $pkg >/dev/null
+	then
+	    INSTALL_LIST="$INSTALL_LIST $pkg"
+	else
+	    BADPKG_LIST="$BADPKG_LIST $pkg"
+	fi
+    done
 }
 
 o() {
     printf "\n$@"
-    read edit -p "Do you want to install these packages? [Yn]"
+    echo "Do you want to install these packages? [Yn]"
+    read edit
     { [ "$edit" = "n" ] || [ "$edit" = "N" ]; } && return
     INSTALL_LIST="$INSTALL_LIST $@"
 }
 
 i_install() {
     echo "Installing: $INSTALL_LIST"
-    $PACMAN --noconfirm --needed -S $INSTALL_LIST
+#    $PACMAN --noconfirm --needed -S $INSTALL_LIST
+    $PACMAN --noconfirm -S $INSTALL_LIST
+    echo "Packages that would not be found for installation: $BADPKG_LIST"
 }
 
 #######################
@@ -76,13 +96,15 @@ fi
 #####{{{ User set up (add the right groups)
 if [ "$USER" = "root" ]
 then
-    read USER -p "Enter username for the main user (empty for no user changes): "
+    echo "Enter username for the main user (empty for no user changes): "
+    read USER
 fi
 
 if [ "$USER" ]
 then
     id "$USER" || {
-	read yn -p "Create new user '$USER'? (yN):"
+	echo "Create new user '$USER'? (yN):"
+	read yn
 	if [ $yn = y ]
 	then
 	    adduser $USER
@@ -163,9 +185,10 @@ pacman-key --refresh-keys
 msg "Installing packages"
 
 ## basic
-i base base-devel linux-tools xorg xorg-apps xorg-fonts
+i base base-devel linux-tools
+i xorg xorg-apps xorg-fonts xorg-utils xorg-xsetroot
 i net-tools wpa_supplicant ethtool rfkill
-i bash-completion
+i bash-completion sudo
 
 ## Language Tools
 i dictd goldendict espeak google-translate
@@ -176,13 +199,13 @@ i gettext
 i espeak
 
 ## Fonts
-i ttf-google-webfonts-git ttf-freefont ttf-liberation proggyfonts terminus-font bdf-unifont ttf-raghu ttf-ipa-mona ttf-monapo otf-ipafont
+i ttf-google-fonts-git ttf-freefont ttf-liberation proggyfonts terminus-font bdf-unifont ttf-raghu ttf-ipa-mona ttf-monapo otf-ipafont
 i ttf-ms-fonts ttf-vista-fonts
 
 ## Multimedia Tools
 i imagemagick sxiv gimp gimp-webp-bzr #asciiview
-i audio-convert mplayer2 vorbis-tools flac lame ffmpeg sox
-i totem pyxdg vlc
+i audio-convert vorbis-tools flac lame ffmpeg sox
+i mpv
 i cmus #xmms2
 i icat-git imlib2-webp-git
 i hsetroot
@@ -202,20 +225,21 @@ i cscope ctags
 
 ## Misc Commandline Tools
 #i tct # http://www.linux-mag.com/id/1889/
-i awk ed lsof lsw ncdu lesspipe dtach dvtm moreutils xprintidle mlocate
+i ed lsof lsw ncdu lesspipe dtach dvtm moreutils xprintidle mlocate
 i stderred-git #rmshit-git #screenfo
 i atool unrar zip unzip unarj p7zip xz bzip2
 i minicom
 i pm-utils
+i lm_sensors
+i acpi
 
 ## Networking
-i avahi-daemon avahi-utils
-i openssh gpg keychain
+i openssh keychain #gpg
 i aircrack-ng
 
 ## Internet
 i firefox chromium netsurf elinks
-i chromium-libpdf-stable chromium-pepper-flash-stable
+i chromium-libpdf chromium-pepper-flash
 i google-talkplugin flashplugin
 i rtorrent #transmission-gtk tucan-hg
 i nmap gnu-netcat aircrack-ng 

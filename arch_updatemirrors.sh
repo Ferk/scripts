@@ -15,10 +15,10 @@
 TEMP=$(mktemp --suffix="-mirrorlist")
 
 # Get the Official list of available mirrors
-wget -O "$TEMP" http://www.archlinux.org/mirrorlist/all/
+curl https://www.archlinux.org/mirrorlist/all/ -o "$TEMP"
 
 # Uncomment them all
-sed '/^#\S/ s|#||' -i "$TEMP"
+sed 's|^#||' -i "$TEMP"
 
 # Rank mirrors according to their response time and save 
 # the 10 fastest ones in the default mirrorlist
