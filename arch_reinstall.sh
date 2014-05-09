@@ -217,7 +217,7 @@ i pulseaudio paprefs pavucontrol
 i submarine
 
 ## Development Tools
-i emacs vim gdb jed 
+i emacs vim gdb jed the_silver_searcher
 i automake cmake
 i openssh x11-ssh-askpass git bzr subversion
 i checkbashisms
