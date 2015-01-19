@@ -17,12 +17,16 @@
 
 export DISPLAY=:0
 
+#PLAYER="mplayer -loop 0 -vo null"
+PLAYER="mpv -vo null --loop=inf"
+
+
 if [ "$1" == "off" ]
 then
-    pkill "mplayer"
-    #xmms2 stop
+    pkill "$PLAYER"
     pkill "^alarm$"
-    amixer sset Master playback 60%
+	vol.sh -100
+	vol.sh +60
 else
 
     SOUND="$HOME/Music/alarm"
@@ -31,18 +35,14 @@ else
     pgrep pulseaudio > /dev/null || start-pulseaudio-x11
 
     test -f "$SOUND" || sox -n -c1 -t ogg "$SOUND" synth sin %-12 sin %-9 sin %-5 sin %-2 fade h 0.1 1 0.9
-    mplayer "$SOUND" -loop 0 -vo null &
-    #xmms2 playlist load "wakeup"
-    #xmms2 play
+    $PLAYER "$SOUND" &
     
-    amixer sset PCM playback 100%
-    amixer sset Front playback 100%
-    # echo "" | pacmd
-
-     for (( i=0; i <= 50; i=i+2 ))
+	# TODO: make sure we are unmuted
+	vol.sh -100
+	vol.sh +20
+    for (( i=0; i <= 50; i=i+2 ))
     do
-        #amixer sset Master playback $i%
-	vol.sh +2
+		vol.sh +2
         sleep 5s
     done
 fi

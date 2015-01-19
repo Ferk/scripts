@@ -19,17 +19,27 @@ time=$(date -d "$@" +"%D %T")
 [ -z $etime ] && exit
 
 
-echo wake at ${time}?
-read
+echo "Going to sleep! the system will wake aproximately at ${time}."
+echo "Press any key to continue, Ctr-C to abort."
+read p
 
-
-[ $etime -gt $(date -d "now" +%s) ] || exit
+now=$(date -d "now" +%s)
+if [ $etime -lt $now ]
+then
+	echo "Please provide a time that is not in the past! (current date: $(date '+%D %T'))"
+	exit 1
+elif [ $((etime - now)) -lt $((4 * 60)) ]
+then
+	echo "The waking time might have a short window to be triggered in some systems."
+	echo "This means the waking time might be earlier than the one specified by a few minutes."
+	echo "Please choose an interval of at least 4 minutes into the future to prevent issues."
+	exit 1
+fi
 
 [ -w /sys/power/state ] || {
     echo "/sys/power/state: not writable, sudoing"
     cmd="sudo"
 }
 
-$cmd rtcwake -m mem -vt ${etime}
-
+$cmd rtcwake -m "${MODE:-mem}" -vt ${etime}
 
