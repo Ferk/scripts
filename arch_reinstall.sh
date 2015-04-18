@@ -304,7 +304,7 @@ else
     mkdir -p $XDG_CONFIG_HOME
     git clone -q $GIT_CONFIG_REPO "$XDG_CONFIG_HOME"
 fi && {
-    "$XDG_CONFIG_HOME/symlinks.sh"
+    "$XDG_CONFIG_HOME/symlink.sh"
 }
 
 ###################
