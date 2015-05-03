@@ -21,8 +21,7 @@ cd "$(dirname "$0")"
     done
 
     sed -n '/^# END_DESCRIPTIONS/,/!$/p' "$0"
-} > "${0}~"
-mv "${0}~" "$0"
+} > "${0}~" && mv "${0}~" "$0"
 
 exit
 #+END_COMMENT
