@@ -23,7 +23,17 @@ else
 	bin=${name#d}
 fi
 
-exec dtach -A "${TMPDIR:-/tmp}/$name.session" \
+if [ -z "$bin $@" ]
+then
+	cat <<EOF
+Usage: ${0##*/} command [ARGUMENTS]
+
+List of currently dettached command sessions:
+EOF
+	ll "${TMPDIR:-/tmp}/*.dtach_session"
+fi
+
+exec dtach -A "${TMPDIR:-/tmp}/$name.dtach_session" \
 	 -e ${DTACH_ESCAPE:-^q} \
 	 -r ${DTACH_REDRAW:-winch} \
 	  $bin "$@"
