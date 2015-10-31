@@ -9,7 +9,7 @@
 
 cd "$(dirname "$0")"
 
-{ # This code is showing because github org-mode implementation is flawed #
+{
     sed -n '1,/^# BEGIN_DESCRIPTIONS/p' "$0"
 
     for script in *
@@ -21,7 +21,7 @@ cd "$(dirname "$0")"
     done
 
     sed -n '/^# END_DESCRIPTIONS/,/!$/p' "$0"
-} | sponge "$0"
+} > "${0}~" && mv "${0}~" "$0"
 
 exit
 #+END_COMMENT
@@ -266,6 +266,13 @@ These are just some scripts I use in my machines.
  Uses pgrep regular expressions to open top
  with the processes that match them
 
+*** rename.sh
+
+ Port of the perl 'rename' tool (also called prename) that is shipped in Debian, 
+ this one only uses sh and sed for portability, so it also runs on cygwin.
+ It will also preview the list of mv commands to perform and ask for verification
+ before calling them.
+
 *** retry
 
  Repeats the execution of the given command until it returns a zero exit code.
@@ -326,13 +333,6 @@ These are just some scripts I use in my machines.
 
  Sets the computer in suspension (to memory)
  and sets it to automatically wake up at the given time.
-
-*** when
-
- Retries the given command until "success".
-
- Success is determined when the command either returned with exit(0) status
- or is still running after the given timeout.
 
 *** xinit.sh
 

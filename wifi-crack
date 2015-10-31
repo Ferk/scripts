@@ -12,17 +12,27 @@ step() {
     [ -z "$cmd" ] || $XTERM -e sh -xc "$cmd;echo Press any key..;read"
 }
 
+# Only root may pass
+if [ "$(id -u)" = "0" ]
+then
+    echo "Running as root!"
+    continue
+elif { gksudo -v && gksudo -l $0 "$@"; } >/dev/null 2>&1
+then
+    exec gksudo -E $0 "$@"
+elif sudo -v &>/dev/null && sudo -l $0 "$@" &>/dev/null
+then
+    exec sudo -E $0 "$@"
+else
+    echo -n "root "
+    exec su -c "$(printf '%q ' "$@")"
+fi
+
 msg() {
     echo "$@" | xmessage -file -
 }
 
 #############
-
-# Only root may pass
-[ $UID = 0 ] || {
-    gksudo $0 "$@"
-    exit
-}
 
 if [ "$WLANS" = "/sys/class/net/wl*" ]; then
     msg "No wireless interface found"
@@ -46,8 +56,8 @@ Scanning ${WLANS%% *} for available networks..
 ----------------------------------------------
 EOF
 for i in $(seq 5); do
-    sudo wpa_cli -i ${WLANS%% *} scan >/dev/null || continue
-    sudo wpa_cli -i ${WLANS%% *} scan_results && break
+    wpa_cli -i ${WLANS%% *} scan >/dev/null || continue
+    wpa_cli -i ${WLANS%% *} scan_results && break
 done | sed 's#/#\t#g' | column -t -s "	" # tab-separated fields
 cat <<EOF
 ----------------------------------------------
@@ -75,18 +85,18 @@ EOF
 #gksudo iwlist $WLANI scan | xmessage -file -
 
 cat <<EOF | step '1. Check (and kill) programs that could interfere with the wireless card'
-sudo systemctl stop wicd networkmanager wpa_supplicant; sudo airmon-ng check kill
-sudo /etc/rc.d/wicd stop; sudo /etc/rc.d/networkmanager stop; sudo pkill wpa_; sudo airmon-ng check kill
-sudo airmon-ng check kill
-sudo airmon-ng check
+systemctl stop wicd networkmanager wpa_supplicant; airmon-ng check kill
+/etc/rc.d/wicd stop; /etc/rc.d/networkmanager stop; pkill wpa_; airmon-ng check kill
+airmon-ng check kill
+airmon-ng check
 exit # skip this step
 EOF
 
 { for iw in $WLANS; do
     cat <<EOF
-sudo airmon-ng stop mon0; sudo airmon-ng start $iw
-sudo airmon-ng stop mon0; sudo airmon-ng start $iw 2 # (channel 2)
-sudo airmon-ng start $iw
+airmon-ng stop mon0; airmon-ng start $iw
+airmon-ng stop mon0; airmon-ng start $iw 2 # (channel 2)
+airmon-ng start $iw
 EOF
    done
    echo 'exit # skip this step'
@@ -96,9 +106,9 @@ MONS=$(echo /sys/class/net/mon* | sed "s%[^ ]*/%%g")
 
 { for mon in $MONS; do
     cat <<EOF
-sudo airodump-ng $mon -w ./wificrack --ivs --encrypt WEP  # only WEP
-sudo airodump-ng $mon -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
-sudo airodump-ng $mon -w ./wificrack
+airodump-ng $mon -w ./wificrack --ivs --encrypt WEP  # only WEP
+airodump-ng $mon -w ./wificrack --ivs -c 11 --bssid 00:01:E3:08:4C:9D
+airodump-ng $mon -w ./wificrack
 EOF
     done
     echo 'exit # skip this step'
