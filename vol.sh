@@ -57,7 +57,7 @@ then
     
     display_vol=$((set_vol * multiplier * 100/max))
 
-    pactl set-sink-volume @DEFAULT_SINK@ -- $set_vol
+    pactl set-sink-volume @DEFAULT_SINK@ $set_vol
 
     # notify with osd if available
     hash osd_cat 2>$- && {
@@ -69,7 +69,7 @@ then
 else
     echo "Couldn't get current volume!"
     display_vol="${percent}%"
-    pactl set-sink-volume @DEFAULT_SINK@ -- ${percent}%
+    pactl set-sink-volume @DEFAULT_SINK@ ${percent}%
 fi
 
 # notify about the volume change in dwm

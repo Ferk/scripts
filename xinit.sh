@@ -5,8 +5,14 @@
 # before launching the WM.
 #---
 
+
+# Launch the given command asynchronously, if it's available
+xinit_run() {
+    hash "${@%% *}" && eval "$@" &
+}
+
 # Only run this script once (checking if some main process is active)
-if pgrep xbindkeys >&-
+if pgrep xbindkeys >/dev/null
 then
 	echo "xinit.sh: already running processes"
 	return || exit
@@ -16,18 +22,12 @@ fi
 
 
 # wm-agnostic keyboard bindings
-xbindkeys &
+xinit_run xbindkeys
 
 # Adjust color temperature of the screen according to the position of the sun
-redshift &
+xinit_run redshift
 
-# Run emacs daemon, so the clients start instantly
-#emacs --daemon &
-
-# Reminders for taking breaks
-#xwrits clock breakclock typetime=50 &
-
-dbus-launch &
+xinit_run dbus-launch
 
 # gnome-settings-daemon && eval $(gnome-keyring-daemon --start --components=secrets) &
 # gnome-power-manager &
@@ -37,13 +37,13 @@ dbus-launch &
 setxkbmap de
 
 # Disable access control so any user can use the DISPLAY
-xhost +
+xinit_run "xhost +"
 
-xbacklight = 0
+# xbacklight utility to control screen backlight
+xinit_run "xbacklight = 0"
 
 # system beep [volume] [pitch] [duration(ms)]
 xset b 2 1 200
-#xset b 0
 
 # # synchronize the primary selection and clipboard buffers
 # autocutsel -selection PRIMARY -fork
@@ -55,29 +55,34 @@ setxkbmap -option terminate:ctrl_alt_bksp
 xrdb ~/.Xdefaults
 
 ## Set up sound and mixer start values
-hash pulseaudio 2>&- && {
+if hash pulseaudio
+then
     start-pulseaudio-x11
     pactl set-sink-volume 0 0x05000 # 0x10000 == 100%
-} || {
+elif hash amixer
+then
     amixer sset Master 50% on
     amixer sset PCM 100% on
     amixer sset Front 100% on
     amixer sset Headphone 100% on
-}
+fi
 
 # ## Temperature & battery checking
 # statck -d &
 
 ## Automatically suspend when computer is idle
-idlescript.sh > idlescript.log &
+xinit_run "idlescript.sh > idlescript.log"
 
 # disable the touchpad tapping when typing
-syndaemon -t -k -i 2 -d &
+xinit_run "syndaemon -t -k -i 2 -d"
 
-# checkgmail &
+# enable video acceleration in ATI cards
+export LIBVA_DRIVER_NAME=vdpau
+export VDPAU_DRIVER=r600
 
 ###
-setwallpaper &
-t &
-browser &
+xinit_run setwallpaper
+xinit_run t
+xinit_run browser
 
+unset xinit_run
