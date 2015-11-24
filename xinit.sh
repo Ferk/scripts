@@ -14,6 +14,7 @@ else
 	echo "** Running xinit.sh script"
 fi
 
+
 # wm-agnostic keyboard bindings
 xbindkeys &
 
@@ -50,6 +51,8 @@ xset b 2 1 200
 
 # Activate Control+Alt+Backspace to kill X server
 setxkbmap -option terminate:ctrl_alt_bksp
+
+xrdb ~/.Xdefaults
 
 ## Set up sound and mixer start values
 hash pulseaudio 2>&- && {
