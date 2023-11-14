@@ -21,7 +21,7 @@ cmd=$(
 	    cat "$HISTORY" "$CACHE" | dmenu "$@"
 	fi
 )
-${SHELL:-"/bin/sh"} -c "$cmd" &
+${DMENU_LAUNCHER:-${SHELL:-"/bin/sh"} -c} "$cmd" &
 
 { # Update history in background
     [ -z $cmd ] || ! hash ${cmd%% *} && exit
