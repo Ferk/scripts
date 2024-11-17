@@ -1,0 +1,222 @@
+#!/bin/bash
+
+i="$@"
+
+
+VCODER=libsvtav1
+#VCODER=av1_amf
+
+ACODER=libopus
+
+
+VOPTS=${VOPTS:-'-preset 6 -crf 35'}
+#AOPTS='-b:a 96K -af "channelmap=channel_layout=5.1"'
+#AOPTS='-b:a 96K -af aformat=channel_layouts="7.1|6.1|5.1|stereo"'
+#AOPTS='-b:a 96K -af aformat=channel_layouts="stereo|7.1|6.1|5.1"'
+#AOPTS='-b:a 96K -ac 2 -lfe_mix_level 1' # Downmixing to 2.1
+
+
+AOPTS=${AOPTS:-'-b:a 96K'}
+
+XOPTS='-map_metadata 0'
+
+XOPTS=$XOPTS' -hide_banner -loglevel warning -stats '${EXTRA_OPTS}
+
+
+############################
+#####      VFILTER     #####
+# Set a filter:v parameter
+#
+# Examples:
+#
+# VFILTER="crop=408:720:436:0" ffavencode "16:9-vertical-720-video.mp4"
+# VFILTER="crop=612:1080:654:0" ffavencode "16:9-vertical-1080-video.mp4"
+# VFILTER="scale=-1:720" ffavencode "1080-video.mp4"
+# VFILTER="scale=-1:540" ffavencode "720-video.mp4"
+# VFILTER="pp=hb/vb/dr/fq|8" ffavencode "cartoon-poorly-encoded.avi"
+#
+if [ $VFILTER ]
+then
+	VOPTS="$VOPTS -filter:v:0 $VFILTER"
+fi
+
+###########################
+##### File processing #####
+processFile() {
+  case $1 in
+    *mp3|*wav)
+      processMusic "$1" "$2"
+      ;;
+    *)
+      processMovie "$1" "$2"
+      ;;
+  esac
+}
+processMovie() {
+  file=$1
+  out=$2
+  printf '\033[33m ----------\n'
+  echo " - FILE: \"$out\""
+  echo " - VIDEO CODEC: $VCODER   OPTS: $VOPTS"
+  echo " - AUDIO CODEC: $ACODER   OPTS: $AOPTS"
+  printf '\033[36m **********\n * PASS 1 *\n'
+  if ffmpeg -nostdin -i "$file" $XOPTS -c:v $VCODER $VOPTS -pass 1 -passlogfile "${out/.mkv/}" -an -f null -c:s copy -ignore_unknown /dev/null 2>&1
+  then
+    printf '\033[35m **********\n * PASS 2 *\n'
+    if [ "$audio" != "opus" ]
+    then
+      if [ "${channels#5.1}" != "$channels" ]
+      then
+        AFORMAT="aformat=channel_layouts=5.1"
+      fi
+    fi
+    echo 'ffmpeg -i "'$file'" '$XOPTS' -map 0 -c copy -c:v:0 '$VCODER' '$VOPTS' -pass 2 -passlogfile "'${out/.mkv/}'" -c:a '$ACODER' '${AFORMAT:+-af $AFORMAT}' '$AOPTS' -c:s copy -copy_unknown "'$out'"'
+    ffmpeg -nostdin -i "$file" $XOPTS -map 0 -c copy -c:v:0 $VCODER $VOPTS -pass 2 -passlogfile "${out/.mkv/}" -c:a $ACODER $AOPTS ${AFORMAT:+-af $AFORMAT} -c:s copy -copy_unknown "$out"
+  else
+    return $?
+  fi #| sed "/^SvtMalloc/d" # SvtMalloc is needlessly verbose
+}
+
+processMusic() {
+  file=$1
+  name=${1%.*}
+  out=${name}.opus
+  printf '\033[33m ----------\n'
+  echo " - FILE: \"$out\""
+  echo " - AUDIO CODEC: $ACODER \t OPTS: $AOPTS"
+  printf '\033[36m **********\n'
+  ffmpeg -i "$file" $XOPTS -c copy -c:a $ACODER $AOPTS ${AFORMAT:+-af $AFORMAT} -c:s copy -copy_unknown "$out"
+}
+
+
+validateFile() {
+  file=$1
+  name=${1#*.}
+  name=${name#*.}
+  ext=${1#$name}
+  codec=$(getVideoCodec "$file")
+  eval "$(getVideoProperties "$file")"
+  printf "\033[35m\n * File: $file \n * Video Codec: ${video_codec_name}\n"
+  if [ "$ext" = "av1opus.mkv" ]
+  then
+    echo "File name already matches av1opus pattern, skipping..."
+    return 1
+  else case "$codec" in
+      *av1)
+        echo "Codec is already AV1, skipping..."
+        return  1
+        ;;
+    esac
+  fi
+  audio=$(getAudioCodec "$file")
+  channels=$(getChannels "$file")
+  #resolution=$(getResolution "$file")
+  duration=$(getDuration "$file")
+  eval $(getAudioProperties "$file")
+  printf " * Resolution: ${video_width}x${video_height}\n * Audio Codec: $audio_codec_name\n * Audio Channels: $audio_channel_layout \n * Duration: $video_duration \n"
+}
+
+getVideoCodec() {
+  ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$1"
+}
+
+getAudioCodec() {
+ ffprobe -v error -select_streams a:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 "$1"
+}
+
+getResolution() {
+	ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1"
+}
+
+getDuration() {
+	ffprobe -i "$1" -v quiet -show_entries format=duration -hide_banner -of default=noprint_wrappers=1:nokey=1 -sexagesimal | sed 's/0*$//'
+}
+
+getChannels() {
+	ffprobe -v error -select_streams a:0 -show_entries stream=channel_layout -of csv=s=x:p=0 "$1"
+}
+
+getAudioProperties() {
+  ffprobe -i "$1" -v quiet -select_streams a:0 -show_entries stream=codec_name,channel_layout -of default=noprint_wrappers=1 | sed 's/^/audio_/'
+}
+
+getVideoProperties() {
+  ffprobe -i "$1" -v quiet -select_streams v:0 -show_entries stream=codec_name,width,height,duration -of default=noprint_wrappers=1 | sed 's/^/video_/'
+}
+
+getOutFilename() {
+  f=${1%.*} # filename without extension
+
+  case "$f" in
+  *\[*.*\])
+	  echo "$f" | sed 's/\(\[[^[]*\)\.[^[\.]*\]$/\1\.av1].mkv/'
+    ;;
+  *\[*\ *\]*)
+	  echo "$f" | sed 's/\(\[[^[]*\) [^[ ]*\]$/\1 av1].mkv/'
+    ;;
+  *)
+    echo "$f [${video_height}p av1].mkv"
+    ;;
+  esac
+}
+
+############################
+##### Handle arguments #####
+for file in "$@"
+do
+  if ! [ -f "$file" ]
+  then
+    echo "file not found: $file"
+  elif ! validateFile "$file"
+  then
+    echo "Skipping file: $file"
+  else
+    out="$(getOutFilename "$file")"
+    if [ -f "$out" ]
+    then
+      echo "Output file exists, skipping $file"
+      continue
+    fi
+    if processFile "$file" "$out"
+    then
+      printf '\033[32m ----------\n'
+      du -h "$file" "$out"
+      oldbytes=$(stat -c %s "$file")
+      newbytes=$(stat -c %s "$out")
+      kbdiff=$(((newbytes-oldbytes)/1024))
+      if [ 0 -gt $oldbytes ]
+      then
+	printf "COMPLETED!! \033[31m; BUT NEW FILE IS BIGGER!! :( $kbdiff KB\n"
+	echo "Please check manually in case there's an issue! further processing for it will be interrupted"
+	mv -v "${out}" "${out%.mkv}.[BIGGER].mkv"
+        break # don't continue with preparations nor run the success_command
+      elif [ -1024 -gt $kbdiff ]
+      then
+        echo "SUCCESS!! ...size diff: $kbdiff KB (less than 1MB!)"
+      else
+        echo "SUCCESS!! ...size diff: $(((kbdiff)/1024)) MB"
+      fi
+      rm "${out/.mkv/}"-*.log # Remove ffmpeg pass 1 log
+      # Copy over subtitles and metadata
+      f=${file%.*} # filename without extension
+      for s in "${f}"*.{nfo,bif,srt,ass,sub,smi,vtt}
+      do
+	test -f "$s" || continue
+        ext=${s#${f/[/\\[}}
+        new=${out%.*}$ext
+        cp -nv "$s" "$new"
+      done
+
+      [ "$success_command" ] && $success_command "$file"
+    else
+      printf "\033[31m\n////////////////////////\n ERROR RESPONSE CODE: $?\n"
+      if test -e "$out"
+      then
+        echo "The result might have been defective, moving it over with .error extension, please check it"
+        mv -v "$out" "$out.error"
+      fi
+    fi
+    printf '\033[0m'
+  fi
+done
+
