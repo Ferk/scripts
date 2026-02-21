@@ -1,5 +1,20 @@
 #!/bin/bash
 
+#----
+# Wrapper for ffmpeg to convert videos into AV Media family of codecs.
+#
+# The wrapper will accept the video files as parameters, if the video
+# is not already in an AV codec, it will convert it, using a set of
+# sane default presets (which can be tweaked via environment variables
+# `VCODER` `VOPTS` `AOPTS` `XOPTS`), and then display the difference in
+# size of the new fiel vs the old.. if the new file is bigger, it'll be
+# renamed for further analysis, considering the compression unsuccessful.
+#
+# You can also set the env variable `successful_command` to set a command
+# to be run on the original file after it has been successfully processed
+# (for example set it to 'rm -v' to delete each original file automatically)
+#----
+
 i="$@"
 
 
@@ -59,13 +74,24 @@ processMovie() {
   echo " - FILE: \"$out\""
   echo " - VIDEO CODEC: $VCODER   OPTS: $VOPTS"
   echo " - AUDIO CODEC: $ACODER   OPTS: $AOPTS"
+  printf '\033[36m **********\n * Single PASS *\n'
+  echo 'ffmpeg -i "'$file'" '$XOPTS' -map 0 -c copy -c:v:0 '$VCODER' '$VOPTS' -c:a '$ACODER' '${AFORMAT:+-af $AFORMAT}' '$AOPTS' -c:s copy -copy_unknown "'$out'"'
+  ffmpeg -nostdin -i "$file" $XOPTS -c copy -c:v:0 $VCODER $VOPTS -c:a $ACODER $AOPTS ${AFORMAT:+-af $AFORMAT} -c:s copy -copy_unknown "$out"
+}
+processMovie2pass() {
+  file=$1
+  out=$2
+  printf '\033[33m ----------\n'
+  echo " - FILE: \"$out\""
+  echo " - VIDEO CODEC: $VCODER   OPTS: $VOPTS"
+  echo " - AUDIO CODEC: $ACODER   OPTS: $AOPTS"
   printf '\033[36m **********\n * PASS 1 *\n'
   if ffmpeg -nostdin -i "$file" $XOPTS -c:v $VCODER $VOPTS -pass 1 -passlogfile "${out/.mkv/}" -an -f null -c:s copy -ignore_unknown /dev/null 2>&1
   then
     printf '\033[35m **********\n * PASS 2 *\n'
-    if [ "$audio" != "opus" ]
+    if [ "$audio_codec_name" != "opus" ]
     then
-      if [ "${channels#5.1}" != "$channels" ]
+      if [ "${channels#5.1}" != "$audio_hannel_layout" ]
       then
         AFORMAT="aformat=channel_layouts=5.1"
       fi
@@ -74,7 +100,7 @@ processMovie() {
     ffmpeg -nostdin -i "$file" $XOPTS -map 0 -c copy -c:v:0 $VCODER $VOPTS -pass 2 -passlogfile "${out/.mkv/}" -c:a $ACODER $AOPTS ${AFORMAT:+-af $AFORMAT} -c:s copy -copy_unknown "$out"
   else
     return $?
-  fi #| sed "/^SvtMalloc/d" # SvtMalloc is needlessly verbose
+  fi
 }
 
 processMusic() {
@@ -103,17 +129,14 @@ validateFile() {
     return 1
   else case "$codec" in
       *av1)
-        echo "Codec is already AV1, skipping..."
+        #echo "Codec is already AV1, skipping..."
         return  1
         ;;
     esac
   fi
-  audio=$(getAudioCodec "$file")
-  channels=$(getChannels "$file")
-  #resolution=$(getResolution "$file")
   duration=$(getDuration "$file")
   eval $(getAudioProperties "$file")
-  printf " * Resolution: ${video_width}x${video_height}\n * Audio Codec: $audio_codec_name\n * Audio Channels: $audio_channel_layout \n * Duration: $video_duration \n"
+  printf " * Resolution: ${video_width}x${video_height}\n * Audio Codec: $audio_codec_name\n * Audio Channels: $audio_channel_layout \n * Duration: $duration \n"
 }
 
 getVideoCodec() {
@@ -148,11 +171,11 @@ getOutFilename() {
   f=${1%.*} # filename without extension
 
   case "$f" in
-  *\[*.*\])
-	  echo "$f" | sed 's/\(\[[^[]*\)\.[^[\.]*\]$/\1\.av1].mkv/'
+  *.\[*.*\])
+    echo "$f" | sed 's/\(\[[^[]*\)\.[^[\.]*\]$/\1\.av1].mkv/'
     ;;
-  *\[*\ *\]*)
-	  echo "$f" | sed 's/\(\[[^[]*\) [^[ ]*\]$/\1 av1].mkv/'
+  *\ \[*\ *\]*)
+    echo "$f" | sed 's/\(\[[^[]*\) [^[ ]*\]$/\1 av1].mkv/'
     ;;
   *)
     echo "$f [${video_height}p av1].mkv"
@@ -184,19 +207,19 @@ do
       oldbytes=$(stat -c %s "$file")
       newbytes=$(stat -c %s "$out")
       kbdiff=$(((newbytes-oldbytes)/1024))
-      if [ 0 -gt $oldbytes ]
+      if [ $newbytes -gt $oldbytes ]
       then
 	printf "COMPLETED!! \033[31m; BUT NEW FILE IS BIGGER!! :( $kbdiff KB\n"
 	echo "Please check manually in case there's an issue! further processing for it will be interrupted"
 	mv -v "${out}" "${out%.mkv}.[BIGGER].mkv"
-        break # don't continue with preparations nor run the success_command
-      elif [ -1024 -gt $kbdiff ]
+        continue # stop further processing, skip the success_command
+      elif [ -1024 -lt $kbdiff ]
       then
         echo "SUCCESS!! ...size diff: $kbdiff KB (less than 1MB!)"
       else
         echo "SUCCESS!! ...size diff: $(((kbdiff)/1024)) MB"
       fi
-      rm "${out/.mkv/}"-*.log # Remove ffmpeg pass 1 log
+      rm -f "${out/.mkv/}"-*.log # Remove ffmpeg pass 1 log
       # Copy over subtitles and metadata
       f=${file%.*} # filename without extension
       for s in "${f}"*.{nfo,bif,srt,ass,sub,smi,vtt}
