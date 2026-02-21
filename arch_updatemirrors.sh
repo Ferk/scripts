@@ -15,7 +15,7 @@
 TEMP=$(mktemp --suffix="-mirrorlist")
 
 # Get the Official list of available mirrors
-curl https://www.archlinux.org/mirrorlist/all/ -o "$TEMP"
+curl https://archlinux.org/mirrorlist/all/ -o "$TEMP"
 
 # Uncomment them all
 sed 's|^#||' -i "$TEMP"
